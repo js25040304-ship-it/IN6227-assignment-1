@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "release_status": "skill-revalidated-pending-final-report-metadata",
+  "frozen_at": "2026-09-14",
+  "skill_name": "tabular-classification-report",
+  "skill_sha256": "388bef0d0d43109ac7827972d85f8a7041f9b8b87c34d27b86d3190f7ae8c4cb",
+  "verification": {
+    "unit_tests_passed": 35,
+    "unit_tests_failed": 0,
+    "phase5_run": "PHASE5-RUN-005",
+    "phase5_scenarios_passed": 13,
+    "phase5_scenarios_failed": 0,
+    "official_skill_validator": "passed",
+    "real_data_run": "RUN-008",
+    "real_data_models_verified": 3,
+    "real_data_verification_checks_passed": 54
+  },
+  "publication_policy": {
+    "course_dataset": "excluded",
+    "assignment_brief": "excluded",
+    "report_template": "excluded",
+    "data_derived_run_artifacts": "excluded",
+    "source_skill_and_review_evidence": "included"
+  },
+  "remaining_release_inputs": [
+    "real GitHub repository URL",
+    "student full name",
+    "student matric number",
+    "final model name and version",
+    "final LLM interface label"
+  ]
+}

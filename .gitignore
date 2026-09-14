@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Supplied course materials and data are not licensed for publication by default.
+/dataset.zip
+/IN6227-Assignment-1.pdf
+/IN6227-Reports-Template.doc
+
+# Real or synthetic generated artifacts may contain data-derived records.
+/runs/
+/forward-tests/artifacts/
+/tmp/
+/final-output/
