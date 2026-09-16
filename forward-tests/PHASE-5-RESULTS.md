@@ -97,3 +97,9 @@ After the final grading simulation identified missing automatic dependency gates
 - All previously covered formats, class structures, reports, all-model verification, and safe-refusal branches continued to pass.
 
 Evidence: `forward-tests/artifacts/PHASE5-RUN-005/results.json` and `reviews/MAJOR-GENERALIZATION-RISK-REPAIR.md`.
+
+## Report-readability rerun: PHASE5-RUN-006
+
+On 2026-09-15, the report generator's parameter prose and table pagination were improved during the identity-bearing report review. PHASE5-RUN-006 then passed the same 13/13 full-grid scenarios, including six generated PDF reports. FT-002's five-class PDF and FT-004's imbalanced binary PDF were rendered and visually inspected on both pages; tables, captions, figures, and second-page sections remained legible with no split table, clipping, or overlap.
+
+The modelling implementation was not changed in this rerun. RUN-008 remains immutable real-data evidence; its skill fingerprint belongs to the previous report-generator revision. Evidence: `forward-tests/artifacts/PHASE5-RUN-006/results.json` and `reviews/FINAL-REPORT-REVIEW.md`.

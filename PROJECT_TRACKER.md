@@ -143,6 +143,7 @@ A task is complete only when its definition of done is satisfied and the evidenc
   - Evidence: The user manually confirmed from RUN-006 that the confusion-matrix cells sum to 13,333 and that positive-class recall is `2445 / (2445 + 723) = 0.7717803`; `reviews/HUMAN-METRIC-CHECK.md`. Separately, RUN-006 `verification.json` automatically validates 13 integrity checks.
 - [ ] P4.8 Render and inspect the final identity-bearing generated report.
   - Definition of done: Main report is at most two pages; text, tables, figures, headers, and links are legible and within margins.
+  - 2026-09-15 review build: the user supplied real identity; `final-output/main_report_review.docx` and `.pdf` were rendered and both pages inspected. This remains open for the release build because the exact LLM variant is unrecorded and the linked private GitHub repository is still empty.
 
 ### Phase 5 Forward-test generalization
 
@@ -196,6 +197,7 @@ A task is complete only when its definition of done is satisfied and the evidenc
 - [ ] P7.6 Verify the GitHub link works without local credentials.
 - [ ] P7.7 Insert the GitHub link into the final report and re-render it.
 - [ ] P7.8 Complete the NTULearn upload and record confirmation.
+  - 2026-09-15: a private, empty repository was created at `https://github.com/js25040304-ship-it/IN6227-assignment-1` and connected as local `origin`. No push, permission change, or NTULearn upload occurred. The review report contains a clickable repository URL, but it does not yet contain the skill Markdown remotely and is not the release report.
 
 ## Borrowed foundations and adaptation rules
 
@@ -282,17 +284,18 @@ Record interventions at the time they happen. These entries will be the source f
 | H010 | 2026-09-14 | Phase 5 was ready to run after report implementation | User explicitly required Phases 3.5 and 3.6 to be rechecked instead of assuming completion | The phases were reopened, hardened, regression-tested, and visually revalidated before Phase 5 was accepted | `reviews/PHASE-3.6-LAYOUT-QA.md`; project conversation |
 | H011 | 2026-09-14 | Phase 5 had appeared complete under 24 tests and eight smoke scenarios | User challenged the premature completion and explicitly requested a Skill-assisted grading review followed by repair of every Critical/Major defect | Added failing regressions first, repaired all audited defects, expanded to 31 unit tests and 11 full-grid forward scenarios, and reran the real dataset as RUN-007 | `reviews/CRITICAL-MAJOR-REPAIR-EVIDENCE.md`; PHASE5-RUN-004; RUN-007 |
 | H012 | 2026-09-14 | Final grading review still found two Major generalization risks | User prioritized both content risks, required failing tests first, and chose the more challenging adaptive model-family option while deferring identity metadata | Added the pre-CV dependency checkpoint, profile-adaptive boosting/forest challenger, 4 new unit tests, 2 new forward scenarios, and real-data RUN-008 | `reviews/MAJOR-GENERALIZATION-RISK-REPAIR.md`; PHASE5-RUN-005; RUN-008 |
+| H013 | 2026-09-15 | The repository and final report metadata were pending | User authorized creating a repository without uploading, then supplied real identity but could not identify the exact Codex model variant | Created a private empty repository and a two-page identity-bearing review report; withheld release status and described the model variant as unrecorded instead of inventing it | Local `origin`; `reviews/FINAL-REPORT-REVIEW.md`; project conversation |
 
 ## Current next actions
 
-1. Create the GitHub repository and record its real public or teacher-accessible URL.
-2. Obtain the user's full name and matric number and confirm final model/interface metadata.
-3. Generate the final RUN-008 report, integrate the reviewed Reflection, and visually inspect the complete submission PDF.
+1. Resolve the exact LLM model variant/version if it is recoverable; retain an honest limitation if not.
+2. Ask the user to approve the first-person Reflection statements, then produce and visually inspect its distinct final PDF.
+3. After user approval to upload, push only the safe tracked source, check teacher access to the GitHub Skill link, regenerate the final report, and prepare the NTULearn submission.
 
 ## Open questions
 
-- User's full name and matric number are required before final report generation, but not needed for implementation.
-- Confirm later whether the GitHub repository will be public or private.
-- Confirm later which exact model/interface metadata must appear after the final run.
+- The user supplied real report identity on 2026-09-15; it is kept only in ignored review artifacts, not in tracked source files.
+- The repository is currently private and empty; teacher access or a later visibility decision remains necessary.
+- The interface is Codex Desktop; the exact GPT-5 variant/version was not recoverable from available task records and must not be fabricated.
 - Confirm whether publishing the supplied dataset is allowed; default is not to publish it.
 - The verified dependency versions are pinned in `tabular-classification-report/requirements.txt`; RUN-008 and the final 35-test suite passed in the durable repository-local Python 3.13.4 environment.

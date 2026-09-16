@@ -95,7 +95,7 @@ Run the full behavior suite:
 python -m unittest discover -s tabular-classification-report/tests -p 'test_*.py'
 ```
 
-The current pre-submission version passes 35 unit tests and all 13 full-grid Phase 5 forward-test scenarios. PHASE5-RUN-005 covers adaptive model-family routing and pre-CV time/group dependency checkpoints in addition to the earlier format, class, report, and safe-refusal branches. RUN-008 is the matching real-data reproduction. Failed diagnostic runs and successful reruns are summarized in [forward-tests/PHASE-5-RESULTS.md](forward-tests/PHASE-5-RESULTS.md).
+The current pre-submission version passes 35 unit tests and all 13 full-grid Phase 5 forward-test scenarios. PHASE5-RUN-006 rechecks the earlier adaptive model-family routing, pre-CV time/group dependency checkpoints, formats, classes, reports, and safe-refusal branches after a report readability and pagination change. RUN-008 is the immutable real-data modelling evidence; its run fingerprint predates this report-only change. Failed diagnostic runs and successful reruns are summarized in [forward-tests/PHASE-5-RESULTS.md](forward-tests/PHASE-5-RESULTS.md).
 
 ## Reproducibility and privacy
 

@@ -37,6 +37,33 @@ MODEL_LABELS = {
     "hist_gradient_boosting": "Hist. gradient boosting",
 }
 
+PARAMETER_LABELS = {
+    "C": "C",
+    "class_weight": "class weight",
+    "max_depth": "depth",
+    "max_features": "features",
+    "min_samples_leaf": "minimum leaf size",
+    "n_estimators": "trees",
+    "max_leaf_nodes": "maximum leaf nodes",
+    "learning_rate": "learning rate",
+    "l2_regularization": "L2 penalty",
+}
+
+
+def readable_parameter(name: str, value: Any) -> str:
+    key = name.removeprefix("model__")
+    label = PARAMETER_LABELS.get(key, key.replace("_", " "))
+    values = value if isinstance(value, list) else [value]
+    rendered = []
+    for item in values:
+        if item is None:
+            rendered.append("unlimited" if key in {"max_depth", "max_leaf_nodes"} else "none")
+        elif isinstance(item, str):
+            rendered.append(item.replace("_", " "))
+        else:
+            rendered.append(str(item))
+    return f"{label}={'/'.join(rendered)}"
+
 
 def load_json(path: Path) -> dict[str, Any]:
     try:
@@ -147,10 +174,10 @@ def format_run(run, size: float = 10, bold: bool | None = None, color: str = "00
         run.bold = bold
 
 
-def add_text(document: Document, text: str, *, first_line: bool = False) -> None:
+def add_text(document: Document, text: str, *, first_line: bool = False, justify: bool = True) -> None:
     paragraph = document.add_paragraph()
     paragraph.style = document.styles["Normal"]
-    paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY if justify else WD_ALIGN_PARAGRAPH.LEFT
     paragraph.paragraph_format.space_after = Pt(3)
     paragraph.paragraph_format.line_spacing = 1.0
     if first_line:
@@ -245,6 +272,7 @@ def format_table(table, header_fill: str = "DCE6F1", font_size: float = 8.5) -> 
             for paragraph in cell.paragraphs:
                 paragraph.paragraph_format.space_after = Pt(0)
                 paragraph.paragraph_format.line_spacing = 1.0
+                paragraph.paragraph_format.keep_with_next = row_index < len(table.rows) - 1
                 for run in paragraph.runs:
                     format_run(run, size=font_size, bold=(row_index == 0))
 
@@ -475,17 +503,18 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     tuning = data["method"]["tuning"]["search"]
     search_text = "; ".join(
         f"{MODEL_LABELS.get(model, model)}: "
-        + ", ".join(f"{name}={values}" for name, values in details.get("parameter_values", {}).items())
+        + ", ".join(readable_parameter(name, values) for name, values in details.get("parameter_values", {}).items())
         for model, details in tuning.items()
     )
     selected_parameter_text = ", ".join(
-        f"{name}={value}" for name, value in data["method"].get("selected_parameters", {}).items()
+        readable_parameter(name, value) for name, value in data["method"].get("selected_parameters", {}).items()
     ) or "defaults"
     add_text(
         document,
         f"The fixed search compared {', '.join(MODEL_LABELS.get(model, model) for model in tuning)} with a most-frequent dummy baseline ({search_text}); selected settings were {selected_parameter_text}. "
         f"Search stopped after the predefined grids were evaluated once on the fixed folds. Final-test metrics were not used for feature, parameter, threshold, or model selection.",
         first_line=True,
+        justify=False,
     )
 
     add_heading(document, "Feature review")

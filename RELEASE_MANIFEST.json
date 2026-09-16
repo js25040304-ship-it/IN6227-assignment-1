@@ -1,17 +1,19 @@
 {
   "schema_version": "1.0",
-  "release_status": "skill-revalidated-pending-final-report-metadata",
-  "frozen_at": "2026-09-14",
+  "release_status": "skill-revalidated-report-reviewed-not-released",
+  "frozen_at": null,
+  "reviewed_at": "2026-09-15",
   "skill_name": "tabular-classification-report",
-  "skill_sha256": "388bef0d0d43109ac7827972d85f8a7041f9b8b87c34d27b86d3190f7ae8c4cb",
+  "skill_sha256": "1eadfa244af739b1150882da010f3d94336f58c2147c65e94a5f19921d3c3e6f",
   "verification": {
     "unit_tests_passed": 35,
     "unit_tests_failed": 0,
-    "phase5_run": "PHASE5-RUN-005",
+    "phase5_run": "PHASE5-RUN-006",
     "phase5_scenarios_passed": 13,
     "phase5_scenarios_failed": 0,
     "official_skill_validator": "passed",
     "real_data_run": "RUN-008",
+    "real_data_run_skill_sha256": "388bef0d0d43109ac7827972d85f8a7041f9b8b87c34d27b86d3190f7ae8c4cb",
     "real_data_models_verified": 3,
     "real_data_verification_checks_passed": 54
   },
@@ -22,11 +24,26 @@
     "data_derived_run_artifacts": "excluded",
     "source_skill_and_review_evidence": "included"
   },
+  "github": {
+    "url": "https://github.com/js25040304-ship-it/IN6227-assignment-1",
+    "visibility": "private",
+    "remote_source_uploaded": false,
+    "teacher_access_verified": false
+  },
+  "report_review": {
+    "run": "RUN-008",
+    "identity_supplied": true,
+    "pages": 2,
+    "paper_size": "A4",
+    "visual_review": "passed",
+    "release_ready": false,
+    "reason": "Exact LLM variant is unrecorded; linked private repository is still empty; Reflection awaits user approval"
+  },
   "remaining_release_inputs": [
-    "real GitHub repository URL",
-    "student full name",
-    "student matric number",
-    "final model name and version",
-    "final LLM interface label"
+    "recover exact LLM model variant/version or explicitly accept the unrecorded limitation",
+    "user approval of first-person Reflection statements",
+    "user authorization before any GitHub push or access change",
+    "teacher-accessible GitHub Skill link",
+    "final release report regenerated after repository contents are available"
   ]
 }

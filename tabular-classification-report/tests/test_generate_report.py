@@ -234,9 +234,11 @@ class GenerateReportTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             text = "\n".join(p.text for p in Document(root / "report" / "report_source.docx").paragraphs)
             self.assertIn("2 IQR-flagged", text)
-            self.assertIn("model__C", text)
+            self.assertNotIn("model__", text)
+            self.assertIn("C=0.1/1.0", text)
             self.assertIn("0.1", text)
-            self.assertIn("model__n_estimators", text)
+            self.assertIn("trees=100/300", text)
+            self.assertIn("trees=300", text)
             self.assertIn("300", text)
 
     def test_report_supports_adaptive_boosting_candidate(self) -> None:
