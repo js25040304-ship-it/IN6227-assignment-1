@@ -134,9 +134,32 @@ class GenerateReportTests(unittest.TestCase):
             self.assertIn("Example Student, TEST001", text)
             self.assertIn("IN6227-Assignment-1", text)
             self.assertIn("Variant-2", text)
+            self.assertIn("DATA QUALITY CHECKS", text)
+            self.assertIn("SKILL GENERALISATION", text)
+            self.assertIn("13 forward-test scenarios", text)
+            section_positions = [
+                text.index(heading)
+                for heading in (
+                    "DISCUSSION",
+                    "LIMITATIONS",
+                    "SKILL GENERALISATION",
+                    "REPRODUCIBILITY AND VERIFICATION",
+                    "CONCLUSION",
+                    "REFERENCES",
+                )
+            ]
+            self.assertEqual(section_positions, sorted(section_positions))
             self.assertIn("Random forest*", text + "\n".join(cell.text for table in document.tables for row in table.rows for cell in row.cells))
             self.assertEqual(len(document.sections), 3)
+            self.assertEqual(document.sections[0]._sectPr.find(qn("w:cols")).get(qn("w:num")), "1")
+            self.assertEqual(document.sections[1]._sectPr.find(qn("w:cols")).get(qn("w:num")), "2")
             self.assertEqual(document.sections[-1]._sectPr.find(qn("w:cols")).get(qn("w:num")), "2")
+            column_breaks = [
+                node
+                for node in document._element.body.iter(qn("w:br"))
+                if node.get(qn("w:type")) == "column"
+            ]
+            self.assertEqual(column_breaks, [], "Report flow must not use manual column breaks")
             hyperlinks = [
                 relationship.target_ref
                 for relationship in document.part.rels.values()

@@ -1,4 +1,4 @@
 interface:
   display_name: "Tabular Classification Report"
   short_description: "Build and report reproducible classification workflows"
-  default_prompt: "Use $tabular-classification-report to analyze this tabular classification dataset and generate an evidence-backed report."
+  default_prompt: "Use $tabular-classification-report to analyze this tabular classification dataset and generate a locally verified PDF report, pausing for any required human decision."

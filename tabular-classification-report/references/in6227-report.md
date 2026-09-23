@@ -12,6 +12,12 @@ Include model name and version, LLM interface, and the GitHub link containing th
 
 Follow the supplied Word template's two-column layout, Times New Roman 10-point body, in-text placement of compact tables/figures, and existing margins. Replace outdated 2023 placeholders. Do not shrink type or line spacing merely to fit the page limit.
 
+The preferred complete route is `scripts/run_workflow.py`. It profiles, models, verifies, assembles `report/report_data.json`, and generates the two-column PDF locally through LibreOffice. When no DOCX template is supplied it creates a minimal internal template; Overleaf is not required.
+
+Two manual output paths are also available. `scripts/generate_report.py` creates the DOCX/PDF, while `scripts/render_latex_report.py` fills `assets/report_template.tex` and emits one self-contained LaTeX file that compiles to the same two-column A4 layout with pdfLaTeX, needing no external figures and no `.bib` file. Choose one path per submission; both read only `report/report_data.json`, so every quantitative claim stays traceable to the verified run.
+
+Never hand-edit generated report text. If the wording or layout must change, change the DOCX template, the LaTeX template, or the renderer, then regenerate.
+
 ## Reflection
 
 Keep the short Reflection distinct from the generated two-page main report. Build it only from recorded human oversight, a challenged skill decision, a specific manual verification, and a confirmed future improvement. Do not fabricate first-person actions; ask the user to confirm final reflection statements.

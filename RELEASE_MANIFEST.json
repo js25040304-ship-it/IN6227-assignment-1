@@ -1,21 +1,29 @@
 {
   "schema_version": "1.0",
-  "release_status": "skill-revalidated-report-reviewed-not-released",
+  "release_status": "submission-package-verified-not-released",
   "frozen_at": null,
-  "reviewed_at": "2026-09-15",
+  "reviewed_at": "2026-09-23",
   "skill_name": "tabular-classification-report",
-  "skill_sha256": "1eadfa244af739b1150882da010f3d94336f58c2147c65e94a5f19921d3c3e6f",
+  "skill_sha256": "c3c476dbd99c828633fd3d29ab7484eddfa5785553280b8ac0153f8810ce2b4e",
   "verification": {
-    "unit_tests_passed": 35,
+    "unit_tests_passed": 56,
     "unit_tests_failed": 0,
-    "phase5_run": "PHASE5-RUN-006",
+    "phase5_run": "PHASE5-RUN-013",
     "phase5_scenarios_passed": 13,
     "phase5_scenarios_failed": 0,
     "official_skill_validator": "passed",
+    "latex_route_regression_tests_passed": 19,
+    "latex_route_modelled_cases_generated": 6,
+    "latex_route_local_pdf_compile": "passed-6-of-6-with-tectonic-0.17.0",
+    "latex_route_compiled_pages_visually_reviewed": 12,
+    "one_command_pdf_workflow": "passed-with-balanced-two-page-layout",
+    "one_command_overleaf_required": false,
     "real_data_run": "RUN-008",
     "real_data_run_skill_sha256": "388bef0d0d43109ac7827972d85f8a7041f9b8b87c34d27b86d3190f7ae8c4cb",
     "real_data_models_verified": 3,
-    "real_data_verification_checks_passed": 54
+    "real_data_verification_checks_passed": 54,
+    "candidate_report_content_checks_passed": 35,
+    "candidate_report_content_checks_failed": 0
   },
   "publication_policy": {
     "course_dataset": "excluded",
@@ -26,24 +34,30 @@
   },
   "github": {
     "url": "https://github.com/js25040304-ship-it/IN6227-assignment-1",
-    "visibility": "private",
-    "remote_source_uploaded": false,
-    "teacher_access_verified": false
+    "visibility": "public",
+    "remote_source_uploaded": true,
+    "latest_local_source_uploaded": false,
+    "teacher_access_verified": true
   },
   "report_review": {
     "run": "RUN-008",
     "identity_supplied": true,
-    "pages": 2,
+    "main_report_pages": 2,
+    "candidate_main_report_sha256": "3df6f769d5b30cba90731be68d1eb5ea7d2f5b781aabf2b826564b00053e3bf8",
+    "reflection_pages": 1,
+    "submission_package_pages": 3,
+    "submission_pdf_path": "output/pdf/IN6227_Assignment1_G2608370F.pdf",
+    "submission_pdf_sha256": "95b72b120dd147e6306543533c38c3a03cb077d9f017606e1b328221c8ed9df5",
     "paper_size": "A4",
-    "visual_review": "passed",
+    "visual_review": "passed-all-three-pages",
+    "reflection_review": "accepted-no-critical-or-major-defects",
+    "reflection_author_confirmation": "confirmed-by-user-on-2026-09-20",
     "release_ready": false,
-    "reason": "Exact LLM variant is unrecorded; linked private repository is still empty; Reflection awaits user approval"
+    "reason": "Final local three-page package passed Reflection, structural, content, hyperlink, and visual review; the optional LaTeX route passed its repaired regressions, six local PDF compilations, and 12-page visual review; latest safe source changes are not yet pushed, and NTULearn has not been submitted"
   },
   "remaining_release_inputs": [
-    "recover exact LLM model variant/version or explicitly accept the unrecorded limitation",
-    "user approval of first-person Reflection statements",
-    "user authorization before any GitHub push or access change",
-    "teacher-accessible GitHub Skill link",
-    "final release report regenerated after repository contents are available"
+    "push the reviewed local commit only after user authorization",
+    "re-verify anonymous access to the pushed GitHub Skill Markdown",
+    "upload the verified PDF to NTULearn only after user authorization"
   ]
 }

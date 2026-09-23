@@ -103,3 +103,17 @@ Evidence: `forward-tests/artifacts/PHASE5-RUN-005/results.json` and `reviews/MAJ
 On 2026-09-15, the report generator's parameter prose and table pagination were improved during the identity-bearing report review. PHASE5-RUN-006 then passed the same 13/13 full-grid scenarios, including six generated PDF reports. FT-002's five-class PDF and FT-004's imbalanced binary PDF were rendered and visually inspected on both pages; tables, captions, figures, and second-page sections remained legible with no split table, clipping, or overlap.
 
 The modelling implementation was not changed in this rerun. RUN-008 remains immutable real-data evidence; its skill fingerprint belongs to the previous report-generator revision. Evidence: `forward-tests/artifacts/PHASE5-RUN-006/results.json` and `reviews/FINAL-REPORT-REVIEW.md`.
+
+## Final disclosure and report-layout reruns: PHASE5-RUN-007 and PHASE5-RUN-008
+
+On 2026-09-20, PHASE5-RUN-007 passed all 13 scenarios after the dual-LLM disclosure and report content were audited. A subsequent visual review found that the local DOCX route's second page was valid but under-filled and omitted explicit SKILL-generalisation evidence. A regression was added, the DOCX generator was brought into content parity, and PHASE5-RUN-008 again passed all 13 scenarios. Every modelled case generated a PDF of no more than two pages; all refusal and dependency-checkpoint cases retained their expected typed outcomes. The optional LaTeX route received its separate regression-first parity repair in PHASE5-RUN-012 below.
+
+Evidence: `forward-tests/artifacts/PHASE5-RUN-007/results.json`, `forward-tests/artifacts/PHASE5-RUN-008/results.json`, and `reviews/FINAL-SUBMISSION-AUDIT.md`.
+
+## Final LaTeX parity, layout, and security reruns: PHASE5-RUN-012 and PHASE5-RUN-013
+
+On 2026-09-21, regression-first repairs brought the optional LaTeX source route into semantic parity with the preferred DOCX/PDF route. On 2026-09-23, local compilation exposed premature column balancing that left avoidable page-one gaps. A failing layout regression was added first, the balancing directive was removed, and the route was regenerated and recompiled with natural left-then-right flow. Nineteen focused LaTeX tests now cover single-file internal holdouts, multiclass output, unresolved positive-class semantics, label-oriented confusion matrices, selected-model comparisons, boosting references, template placeholders, labels containing commas or LaTeX metacharacters, strict GitHub URL validation, and column flow.
+
+The complete unit suite passed 56/56, the official Skill validator passed, and PHASE5-RUN-013 passed all 13 forward scenarios. All six modelled cases (FT-001, FT-002, FT-003, FT-004, FT-007, and FT-008) generated self-contained `.tex` files with no unresolved placeholders, misspelled boosting reference token, or raw `\\input` payload. Tectonic 0.17.0 compiled all six into two-page A4 PDFs without TeX errors; all 12 pages were visually inspected with no clipping, overlap, broken tables, or unreadable text. The already-approved three-page submission PDF is unchanged.
+
+Evidence: `forward-tests/artifacts/PHASE5-RUN-013/results.json`, `tabular-classification-report/tests/test_render_latex_report.py`, and `tmp/latex-route-qa/run012-compiled/` (local, ignored QA artifacts).

@@ -1,5 +1,7 @@
 # Final report review gate
 
+> Superseded on 2026-09-20 by `reviews/FINAL-SUBMISSION-AUDIT.md`. The repository is now public and anonymously readable, both LLM environments are identified, and the Reflection has been appended to a verified local submission package. The historical findings below explain the earlier gate state.
+
 Date: 2026-09-15  
 Source evidence: immutable RUN-008  
 Status: identity-bearing review artifact checked; not a release artifact

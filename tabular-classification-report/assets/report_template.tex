@@ -1,0 +1,70 @@
+% LaTeX report template for the tabular-classification-report skill.
+% Filled by scripts/render_latex_report.py from report/report_data.json.
+% Every number in the rendered output comes from that artifact, so the report
+% cannot drift from the verified run. Do not hand-edit generated output.
+\documentclass[10pt,a4paper,twocolumn]{article}
+
+\usepackage[left=0.72in,right=0.72in,top=0.95in,bottom=0.95in]{geometry}
+\setlength{\columnsep}{0.22in}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+\usepackage{microtype}
+\usepackage{booktabs,tabularx,array,colortbl}
+\usepackage[font=small,labelfont=bf,hypcap=false]{caption}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{xurl}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[colorlinks=true,urlcolor=blue!55!black,linkcolor=black]{hyperref}
+
+\definecolor{ink}{RGB}{31,42,55}
+\definecolor{muted}{RGB}{92,103,115}
+\definecolor{barA}{RGB}{54,86,131}
+\definecolor{barB}{RGB}{191,120,58}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash\hsize=1.5\hsize}X}
+\newcolumntype{C}{>{\centering\arraybackslash\hsize=0.875\hsize}X}
+\newcolumntype{M}{>{\raggedright\arraybackslash\hsize=1.6\hsize}X}
+\newcolumntype{D}{>{\centering\arraybackslash\hsize=0.68\hsize}X}
+
+\titleformat{\section}{\normalfont\fontsize{10}{12}\selectfont\bfseries\color{ink}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{5pt}{1.5pt}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0.5pt}
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.12}
+\raggedbottom
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\fontsize{8}{10}\selectfont\color{muted}<<HEADER_TITLE>>}
+\fancyfoot[L]{\fontsize{8}{10}\selectfont\color{muted}<<FULL_NAME>>}
+\fancyfoot[R]{\fontsize{8}{10}\selectfont\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{11pt}
+
+\begin{document}
+\twocolumn[{%
+  \begin{center}
+    {\fontsize{19}{22}\selectfont\bfseries\color{ink}<<REPORT_TITLE>>\par}
+    \vspace{5pt}
+    {\fontsize{10}{12}\selectfont <<FULL_NAME>> \quad <<MATRIC_NUMBER>>\par}
+    {\fontsize{10}{12}\selectfont IN6227-Assignment-1 \quad Variant-2\par}
+    \vspace{2pt}
+    {\fontsize{8.5}{10}\selectfont\color{muted}
+      LLMs: \texttt{<<MODEL_NAME>>} (<<MODEL_VERSION>>)\par}
+    {\fontsize{8.5}{10}\selectfont\color{muted}
+      Interfaces: <<LLM_INTERFACE>><<REASONING_EFFORT>>\par}
+    {\fontsize{8.5}{10}\selectfont\color{muted}
+      Skill Markdown: \href{<<GITHUB_URL>>}{GitHub repository}\par}
+  \end{center}
+  \vspace{3pt}
+  \hrule height 0.5pt
+  \vspace{8pt}
+}]
+
+<<BODY>>
+
+\end{document}

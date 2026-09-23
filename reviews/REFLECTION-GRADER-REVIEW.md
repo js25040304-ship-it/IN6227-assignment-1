@@ -35,7 +35,7 @@ The revised draft directly addresses all three required areas and explicitly dis
 
 - Human actions correspond to H005, H006, H009, H011, and H012 in `PROJECT_TRACKER.md`.
 - The confusion-matrix values and recall formula match `reviews/HUMAN-METRIC-CHECK.md` and are reproduced by RUN-008.
-- The 35 unit tests, 13 Phase 5 cases, adaptive candidate rule, and 54 verification checks match the current release and repair evidence.
+- The 41 unit tests, 13 Phase 5 cases, adaptive candidate rule, and 54 verification checks match the current release and repair evidence.
 - No citation, performance, or human-action claim was invented.
 
 ## Recommendation

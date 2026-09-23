@@ -1,11 +1,7 @@
-% IN6227 Assignment 1, Variant 2 -- Overleaf copy of the SKILL-generated report.
-% Compile with pdfLaTeX. This single file needs no external figures or .bib file.
-% Every number below is copied from the verified RUN-008 artifacts; the
-% machine-readable sources are report/report_data.json, test_metrics.json,
-% cv_results.csv and verification.json. If the SKILL is rerun, regenerate this
-% file instead of editing numbers by hand.
-% Keep the separate Reflection outside the two-page main report.
-
+% LaTeX report template for the tabular-classification-report skill.
+% Filled by scripts/render_latex_report.py from report/report_data.json.
+% Every number in the rendered output comes from that artifact, so the report
+% cannot drift from the verified run. Do not hand-edit generated output.
 \documentclass[10pt,a4paper,twocolumn]{article}
 
 \usepackage[left=0.72in,right=0.72in,top=0.95in,bottom=0.95in]{geometry}
@@ -28,8 +24,6 @@
 \definecolor{barA}{RGB}{54,86,131}
 \definecolor{barB}{RGB}{191,120,58}
 
-% Table columns: a wider label column with evenly divided numeric columns,
-% so the values sit under their headings instead of drifting to the margin.
 \newcolumntype{L}{>{\raggedright\arraybackslash\hsize=1.5\hsize}X}
 \newcolumntype{C}{>{\centering\arraybackslash\hsize=0.875\hsize}X}
 \newcolumntype{M}{>{\raggedright\arraybackslash\hsize=1.6\hsize}X}
@@ -61,8 +55,9 @@
     {\fontsize{10}{12}\selectfont IN6227-Assignment-1 \quad Variant-2\par}
     \vspace{2pt}
     {\fontsize{8.5}{10}\selectfont\color{muted}
-      LLM: \texttt{gpt-5.6-sol} (GPT-5.6 Sol) \quad
-      Reasoning effort: medium \quad Interface: Codex Desktop\par}
+      LLMs: \texttt{gpt-5.6-sol; deepseek-flash} (GPT-5.6 Sol; DeepSeek-V4.1-Flash)\par}
+    {\fontsize{8.5}{10}\selectfont\color{muted}
+      Interfaces: Codex Desktop; DeepSeek API (OpenAI-compatible Responses API)\quad Codex reasoning: medium (Codex)\par}
     {\fontsize{8.5}{10}\selectfont\color{muted}
       Skill Markdown: \href{https://github.com/js25040304-ship-it/IN6227-assignment-1}{GitHub repository}\par}
   \end{center}
@@ -74,11 +69,12 @@
 \balance
 
 \section*{DATA AND CLEANING}
-The supplied archive contained one binary target, \texttt{label}
-(\texttt{yes}/\texttt{no}), and 15 predictors: seven numeric and eight
-categorical. Rows without a label cannot supervise training, so they were
-excluded before modelling: three from the development split and one from the
-test split. That left 31,109 development rows and 13,333 test rows.
+The supplied archive contained one binary target, \texttt{label} (\texttt{no}/\texttt{yes}), and 15
+predictors: 7 numeric and 8 categorical. Rows without a label cannot
+supervise training, so they were excluded before modelling:
+3 from the development split and
+1 from the test split. That left
+31,109 development rows and 13,333 test rows.
 
 \noindent
 \begin{minipage}{\columnwidth}
@@ -100,71 +96,55 @@ Test & 13,333 & 1 & 21 & 0 & 4,762 \\
 \end{minipage}
 \par\vspace{5pt}
 
-The positive class was 24.0\% of development rows and 23.8\% of test rows. A
-majority-to-minority ratio of 3.17:1 means a classifier can reach 76\%
-accuracy by always answering \texttt{no}, so accuracy alone was never used to
-judge a model. Missing predictors affected roughly 0.16\% of rows in each
-split, and neither split contained duplicate rows; no test row shared its
-complete predictor vector with a development row, so there was no evidence of
-train/test row overlap.
+The positive class was 24.0\% of development rows and
+23.8\% of test rows. A majority-to-minority ratio of
+3.17:1 means a classifier can reach 76\% accuracy by
+always answering \texttt{no}, so accuracy alone was never used to judge a
+model. Missing predictors affected roughly 0.16\% of rows in the
+development split, and neither split contained duplicate rows; no test row shared its complete predictor vector with a development row, so there was
+no evidence of train/test row overlap, and the test split contained no unseen categories.
 
-Distribution checks flagged 10,908 IQR-extreme \emph{values} in development,
-but the flags are concentrated rather than diffuse: \texttt{activity\_duration}
-(5,350) and \texttt{load\_ratio} (2,527) supply 72\% of them, which points to
-skewed distributions in two variables rather than corrupted records. Test
-profiling flagged 4,762 values, a similar density (35.7 vs.\ 35.1 flags per
-100 rows), so the two splits behave comparably. No row was deleted on
-outlier evidence: with a 3.17:1 imbalance, blanket deletion removes
+Distribution checks flagged 10,908 IQR-extreme
+\emph{values} in development, but the flags are concentrated rather than diffuse:
+\texttt{activity\_duration} (5,350) and \texttt{load\_ratio} (2,527) supply 72\% of them, which points to skewed distributions in two
+variables rather than corrupted records. Test profiling flagged
+4,762 values, a similar density (35.7 vs.\
+35.1 flags per 100 rows), so the two splits behave comparably. No row was
+deleted on outlier evidence: with a 3.17:1 imbalance, blanket deletion removes
 minority-class examples the model needs most.
 
-Three numeric predictors were strongly correlated: \texttt{performance\_score}
-with \texttt{stability\_index} (0.891), and both with \texttt{composite\_rank}
-(0.880 and 0.830). Correlated inputs were retained for the tree model and read
-cautiously for logistic regression, where coefficients are not treated as
-independent effects.
+The strongest numeric correlations were \texttt{performance\_score} with \texttt{stability\_index} (0.891); \texttt{performance\_score} with \texttt{composite\_rank} (0.880); \texttt{stability\_index} with \texttt{composite\_rank} (0.830). Correlated inputs were retained for the tree model; logistic coefficients are not read as independent effects.
 
 \section*{PREPROCESSING AND FEATURES}
 Numeric predictors were median-imputed and categorical predictors
 most-frequent-imputed, in both cases fitted inside the training part of each
 fold so that no validation row influenced its own imputation. Categorical
 levels were one-hot encoded with unseen-category handling, a minimum level
-frequency of two and a cap of 100 levels per field; the test split contained
-no unseen categories. Only logistic regression used numeric scaling. Every
-learned transformation stayed inside the five shuffled stratified folds
-(seed 42).
+frequency of 2 and a cap of
+100 levels per field. Only logistic regression used
+numeric scaling. Every learned transformation stayed inside the
+5 shuffled stratified folds (seed 42).
 
-The aggregate-like predictor \texttt{composite\_rank} was correlated with the
-numeric predictors it could plausibly be derived from, and the dataset
-documentation did not establish that it exists at prediction time. A
-development-only sensitivity check changed macro-F1 by $+0.0002$ for logistic
-regression and $-0.0011$ for random forest when the feature was removed. Both
-shifts are smaller than the corresponding fold standard deviations (0.0079
-and 0.0039), so the feature carried no measurable benefit while carrying
-unresolved leakage risk. It was dropped before final evaluation, and the
-final pipelines use the remaining 14 predictors. The check used development
-folds only and cannot certify that the other 14 fields are available at
-deployment.
+The aggregate-like predictor \texttt{composite\_rank} had uncertain prediction-time availability; this was a provenance risk, not proof of target leakage. A development-only sensitivity check changed macro-F1 by 0.0002 for logistic; -0.0011 for random forest when \texttt{composite\_rank} was removed.
+
+The flagged aggregate was dropped before final evaluation, and the final pipelines
+use the remaining 14 predictors. The check used development folds only and
+cannot certify that the other fields are available at deployment.
 
 \section*{TRAINING AND SELECTION}
 Three configurations were compared on identical fixed folds: a
 most-frequent dummy baseline, regularised logistic regression as an
 interpretable linear reference, and a random forest as the nonlinear
-challenger~[1]. The forest was the sensible challenger because eight of the
-fifteen predictors are categorical and interactions between them are
-plausible after bounded one-hot encoding.
+challenger~[1]. The random forest was the sensible challenger because interactions
+between the categorical and numeric predictors are plausible; a tree splits on them
+directly, whereas the linear model must encode each interaction by hand.
 
-The search space was fixed in advance. Logistic regression crossed
-$C\in\{0.1,1.0\}$ with balanced versus unweighted class
-treatment, four settings. The random forest used four joint settings rather
-than a full grid: the class-weight choice is coupled to the leaf size
-(balanced subsample with minimum leaf size 3, or unweighted with minimum leaf
-size 1), and each pair was crossed with depth 18 versus unlimited, at 160
-trees and square-root feature sampling. Every candidate was fitted with and
-without \texttt{composite\_rank}, giving 17 candidate configurations in total
-(1 dummy, 8 logistic, 8 forest) and 85 fold fits. Search stopped once that
-predefined grid had been evaluated once.
+The search space was fixed in advance. Logistic varied C (0.1, 1.0), class weight (balanced, none) (4 settings per feature set); Random forest varied class weight (balanced subsample, none), max depth (18, unlimited), min samples leaf (1, 3) across four coupled settings per feature set (not a full factorial; fixed at max features=sqrt, n estimators=160). Every candidate was fitted
+with and without the excluded feature, giving 17 candidate configurations in
+total and 85 fold fits. The selected settings were class weight=balanced subsample, max depth=unlimited, max features=sqrt, min samples leaf=3, n estimators=160. Search
+stopped once that predefined grid had been evaluated once.
 
-Macro-F1 was the primary selection metric because it weights the two classes
+Macro-F1 was the primary selection metric because it weights the classes
 equally and therefore cannot be improved by ignoring the minority
 class~[3]. Selection used the paired development-fold difference with a
 predefined one-standard-error practical-tie rule. Final-test metrics did not
@@ -174,7 +154,7 @@ inform any feature, parameter, threshold or model choice.
 \noindent
 \begin{minipage}{\columnwidth}
 \centering
-\captionof{table}{Development and held-out comparison (forest selected).}
+\captionof{table}{Development and held-out comparison (selected model in bold).}
 \label{tab:models}
 \vspace{2pt}
 {\normalsize
@@ -185,7 +165,7 @@ Model & CV M-F1 & Test M-F1 & Yes rec. & Yes prec. \\
 \midrule
 Dummy & 0.432 & 0.433 & 0.000 & -- \\
 Logistic & 0.761 & 0.762 & 0.570 & 0.696 \\
-Random forest & \textbf{0.770} & \textbf{0.769} & \textbf{0.772} & 0.584 \\
+\textbf{Random forest} & \textbf{0.770} & \textbf{0.769} & \textbf{0.772} & 0.584 \\
 \bottomrule
 \end{tabularx}}
 \end{minipage}
@@ -221,7 +201,7 @@ Random forest & \textbf{0.770} & \textbf{0.769} & \textbf{0.772} & 0.584 \\
 \legend{Test macro-F1, \texttt{yes} recall}
 \end{axis}
 \end{tikzpicture}
-\captionof{figure}{Held-out macro-F1 against positive-class recall.}
+\captionof{figure}{Held-out macro-F1 and positive-class recall by model.}
 \label{fig:metrics}
 \end{minipage}
 \par\vspace{6pt}
@@ -239,48 +219,49 @@ Random forest & \textbf{0.770} & \textbf{0.769} & \textbf{0.772} & 0.584 \\
 Model & TN & FP & FN & TP \\
 \midrule
 Logistic & 9,378 & 787 & 1,363 & 1,805 \\
-Forest & 8,425 & 1,740 & 723 & 2,445 \\
+Random forest & 8,425 & 1,740 & 723 & 2,445 \\
 \bottomrule
 \end{tabularx}}
 \end{minipage}
 
-The dummy baseline is a real floor, not a straw man: answering \texttt{no}
-everywhere returns 0.762 accuracy but macro-F1 0.433 and balanced accuracy
-0.500, and its average precision (0.238) is essentially the class prevalence.
-Both substantive models clear it on the class-balanced measures (balanced
-accuracy 0.800 and 0.746).
+The dummy baseline is a real floor: answering \texttt{no} everywhere returns 0.762 accuracy but macro-F1 0.433 and balanced accuracy 0.500, the last matching the class prevalence. Both substantive models clear it on the class-balanced measures (balanced accuracy 0.746 and 0.800).
 
 \section*{FINDINGS AND DISCUSSION}
-The forest won on development evidence and reproduced that lead on the
-held-out split: macro-F1 0.770 versus 0.761 across folds, and 0.769 versus
-0.762 on test, with balanced accuracy 0.800. The gain is not free. The forest
-recovered 77.2\% of positive cases against 57.0\% for logistic regression
-(640 fewer false negatives) but raised 953 more false positives, giving lower
-positive precision (0.584 versus 0.696) and lower accuracy (0.815 versus
-0.839). Per class it is better on \texttt{yes} (F1 0.665 versus 0.627) and
-worse on \texttt{no} (0.872 versus 0.897).
+The declared rule selected the random forest: macro-F1 was the primary
+metric and the one-standard-error tie test was fixed before the final split was
+read. The lead held out (0.770
+versus 0.761 across folds;
+0.769 versus 0.762 on test, balanced accuracy
+0.800), and it was not free: the random forest
+recovered 77.2\% of positive cases against
+57.0\% for logistic (640 fewer false negatives, 953 more false positives), giving positive
+precision 0.584 versus 0.696 and accuracy
+0.815 versus 0.839. Per class it is better on \texttt{yes}
+(F1 0.665 versus 0.627) and worse on
+\texttt{no} (0.872 versus 0.897).
 
 Ranking quality is a separate question from the decision rule. ROC-AUC was
-0.889 for both models and average precision was 0.703 versus 0.702, so the two
-models order the held-out rows almost identically; the visible difference
-comes from where each untuned decision point falls, not from one model
-separating the classes better. Reporting only accuracy, or only AUC, would
-have hidden that distinction.
+0.889 for the selected model and 0.889 for the
+reference, and average precision was 0.703 versus
+0.702, so the two models order the held-out rows almost
+identically; the visible difference comes from where each untuned decision point
+falls, not from one model separating the classes better. Reporting only accuracy,
+or only AUC, would have hidden that distinction.
 
-Across paired folds the forest-minus-logistic macro-F1 difference was
-$+0.0093$ (SD 0.0111, SE 0.0050) and the forest won four of five folds. That
-clears the practical-tie rule, but the rule is not a significance test: folds
-share training data and a one-point gain is modest. Forest has the lower
-observed error cost only if a false negative costs more than
-$953/640\approx1.49$ times a false positive; this comparison is post hoc and
-explains the choice rather than driving it.
+Across paired folds the random forest-minus-logistic
+macro-F1 difference was +0.0093 (SD
+0.0111, SE 0.0050) and the
+random forest won 4 of
+5 folds. That clears the practical-tie rule, but the
+rule is not a significance test: folds share training data and a one-point gain is
+modest. Forest has the lower observed error cost only if a false negative costs more than $953/640\approx1.49$ times a false positive; this comparison is post hoc and explains the choice rather than driving it.
 
-No threshold tuning was attempted: the assignment supplies no error costs and
-the held-out split has already been inspected, so a cost-driven threshold
-chosen now would turn that evidence into another tuning resource. The
-defensible next step is a fresh development-only plan with the deployment
-costs written down first. Until then the forest is a reproducible research
-choice under macro-F1, not an endorsed operational policy.
+No threshold tuning was attempted: with no supplied error costs and an
+already-inspected holdout, a cost-driven threshold chosen now would turn that
+evidence into another tuning resource. The defensible next step is a fresh
+development-only plan with the costs written down first; until then the
+random forest is a reproducible research choice under macro-F1, not an
+endorsed operational policy.
 
 The analysis assumes independent rows and a stable train/test collection. No
 dependency warning was raised, but that is not evidence of independence:
@@ -290,29 +271,32 @@ groups, probability calibration, or prediction-time availability for every
 retained field, so generalization beyond this split remains conditional.
 
 \section*{SKILL GENERALISATION}
-The report is produced by a reusable SKILL. It takes a dataset path, profiles
-the data, records typed quality warnings, selects preprocessing and two
-substantive candidates from a fixed policy, evaluates them in fixed folds
-against a dummy baseline, and writes a run directory of machine-readable
-artefacts from which the report is rendered.
+The report is produced by a reusable SKILL driven by an AI operator. The
+operator proposes preprocessing and model choices; a fixed policy then
+constrains which candidate families and which selection rule may be used, so a
+run cannot silently switch models to chase a score. The SKILL profiles the
+data, records typed quality warnings, evaluates the surviving candidates in
+fixed folds against a dummy baseline, and writes a run directory of
+machine-readable artefacts from which the report is rendered.
 
-Generality was tested, not asserted. Eight synthetic cases ran end to end:
-four modelling cases (numeric-only binary, mixed-type three-class, missing
-values with an unseen category, imbalanced binary) each completed profiling,
-comparison, verification and two-page report generation; two cases with an
-ambiguous or absent target returned \texttt{needs\_input}; and two unsafe
-cases refused rather than fabricating results.
+Generality was exercised, not proven. 4 synthetic modelling cases
+ran end to end on differently shaped inputs (numeric-only binary, mixed-type
+three-class, missing values with an unseen category, imbalanced binary) and each
+produced a two-page report; 4 unsafe or unresolvable inputs
+returned an explicit request for human input or a typed refusal instead of a
+fabricated result. This shows the pipeline runs on differently shaped inputs and
+declines unsafe ones; it does not establish accuracy on new real data.
 
 \section*{VERIFICATION}
 RUN-008 records dataset and Skill fingerprints, the seed, fold assignments,
-candidate settings, saved predictions and package versions (Python 3.13.4,
-pandas 2.2.3, NumPy 2.5.3, scikit-learn 1.9.1~[2]), together with ten
-recorded decisions (DPROF-001--005, DMOD-001--005). An independent verifier
-recomputed 54 checks from the saved predictions, covering all scalar metrics,
-both confusion matrices, prediction-row alignment and score normalisation;
-all passed. Two checks are explicit: the forest confusion counts sum to
-13,333, and its positive recall is $2{,}445/(2{,}445+723)=0.772$. Reproducing
-a run verifies the computation, not the provenance assumptions above.
+candidate settings, saved predictions and package versions (python 3.13.4, pandas 2.2.3, numpy 2.5.3, openpyxl 3.1.5, scikit-learn 1.9.1~[2]), together
+with 10 recorded decisions. An independent verifier recomputed
+54 checks from the saved predictions, covering all scalar metrics, both
+confusion matrices, prediction-row alignment and score normalisation; all
+passed. Two checks are explicit: the random forest confusion counts sum
+to 13,333, and its positive recall is
+$2,445/(2,445+723)=0.772$. Reproducing a run
+verifies the computation, not the provenance assumptions above.
 
 \section*{REFERENCES}
 {\footnotesize
@@ -326,7 +310,7 @@ a run verifies the computation, not the provenance assumptions above.
 \emph{J.\ Mach.\ Learn.\ Res.}, 12, 2825--2830.\par
 \hangindent=1.4em
 [3] He, H., \& Garcia, E. A. (2009). Learning from imbalanced data.
-\emph{IEEE Trans.\ Knowl.\ Data Eng.}, 21(9).
+\emph{IEEE Trans.\ Knowl.\ Data Eng.}, 21(9), 1263--1284.
 \href{https://doi.org/10.1109/TKDE.2008.239}{doi:10.1109/TKDE.2008.239}.\par
 }
 

@@ -17,7 +17,7 @@ from docx import Document
 from docx.enum.section import WD_ORIENT, WD_SECTION
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK, WD_TAB_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.opc.constants import RELATIONSHIP_TYPE
@@ -63,6 +63,25 @@ def readable_parameter(name: str, value: Any) -> str:
         else:
             rendered.append(str(item))
     return f"{label}={'/'.join(rendered)}"
+
+
+def search_summary(model: str, details: dict[str, Any]) -> str:
+    """Describe evaluated settings without implying a Cartesian grid."""
+    parameters = details.get("parameter_values", {})
+    varying = [values for values in parameters.values() if isinstance(values, list) and len(values) > 1]
+    factorial_size = 1
+    for values in varying:
+        factorial_size *= len(values)
+    settings = max(details.get("feature_sets", {}).values() or [0])
+    label = MODEL_LABELS.get(model, model)
+    if model == "random_forest":
+        label += " [1]"
+    text = label + ": " + ", ".join(readable_parameter(name, values) for name, values in parameters.items())
+    if factorial_size > settings:
+        text += f"; {settings} coupled settings per feature set (not a full factorial)"
+    elif settings:
+        text += f"; {settings} settings per feature set"
+    return text
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -174,12 +193,22 @@ def format_run(run, size: float = 10, bold: bool | None = None, color: str = "00
         run.bold = bold
 
 
-def add_text(document: Document, text: str, *, first_line: bool = False, justify: bool = True) -> None:
+def add_text(
+    document: Document,
+    text: str,
+    *,
+    first_line: bool = False,
+    justify: bool = True,
+    keep_together: bool = False,
+    keep_with_next: bool = False,
+) -> None:
     paragraph = document.add_paragraph()
     paragraph.style = document.styles["Normal"]
     paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY if justify else WD_ALIGN_PARAGRAPH.LEFT
     paragraph.paragraph_format.space_after = Pt(3)
     paragraph.paragraph_format.line_spacing = 1.0
+    paragraph.paragraph_format.keep_together = keep_together
+    paragraph.paragraph_format.keep_with_next = keep_with_next
     if first_line:
         paragraph.paragraph_format.first_line_indent = Inches(0.18)
     format_run(paragraph.add_run(text))
@@ -303,17 +332,6 @@ def add_caption(document: Document, text: str) -> None:
     format_run(paragraph.add_run(text), size=8)
 
 
-def add_vertical_spacer(document: Document, lines: int = 5) -> None:
-    paragraph = document.add_paragraph()
-    paragraph.paragraph_format.space_before = Pt(0)
-    paragraph.paragraph_format.space_after = Pt(0)
-    paragraph.paragraph_format.line_spacing = 1.0
-    run = paragraph.add_run()
-    format_run(run, size=10)
-    for _ in range(lines):
-        run.add_break()
-
-
 def focus_metric(data: dict[str, Any], final: dict[str, Any]) -> float:
     if data["task"].get("type") == "binary" and data["task"].get("positive_label") is not None:
         positive = str(data["task"].get("positive_label"))
@@ -410,7 +428,7 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     except KeyError:
         title_style = document.styles.add_style("Title", WD_STYLE_TYPE.PARAGRAPH)
     title_style.font.name = "Times New Roman"
-    title_style.font.size = Pt(24)
+    title_style.font.size = Pt(22)
     title_style.font.bold = True
     title_style.font.color.rgb = RGBColor(0, 0, 0)
 
@@ -420,23 +438,24 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     first.page_height = Mm(297)
     first.left_margin = Inches(0.75)
     first.right_margin = Inches(0.75)
-    first.top_margin = Inches(1.0)
-    first.bottom_margin = Inches(0.8)
+    first.top_margin = Inches(0.82)
+    first.bottom_margin = Inches(0.65)
     set_columns(first, 1)
 
     title = document.add_paragraph(style="Title")
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    title.paragraph_format.space_before = Pt(15)
+    title.paragraph_format.space_before = Pt(6)
     title.paragraph_format.space_after = Pt(3)
     title.add_run("Leakage-Aware Tabular Classification")
     metadata = document.add_paragraph()
     metadata.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    metadata.paragraph_format.space_after = Pt(6)
+    metadata.paragraph_format.space_after = Pt(3)
     lines = [
         f"{args.full_name}, {args.matric_number}",
         "IN6227-Assignment-1",
         "Variant-2",
-        f"Model: {args.model_name} {args.model_version} | Interface: {args.llm_interface}",
+        f"LLMs: {args.model_name} ({args.model_version})",
+        f"Interfaces: {args.llm_interface}",
     ]
     for index, line in enumerate(lines):
         run = metadata.add_run(line)
@@ -448,8 +467,8 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     body_section = document.add_section(WD_SECTION.CONTINUOUS)
     body_section.left_margin = Inches(0.75)
     body_section.right_margin = Inches(0.75)
-    body_section.top_margin = Inches(1.0)
-    body_section.bottom_margin = Inches(0.8)
+    body_section.top_margin = Inches(0.82)
+    body_section.bottom_margin = Inches(0.65)
     set_columns(body_section, 2, 360)
 
     splits = data["dataset"]["splits"]
@@ -463,9 +482,9 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     final_source = "the untouched supplied test set" if test else "a stratified held-out partition"
     add_text(
         document,
-        f"The skill inferred a {data['task']['type']} target, {data['task']['target']}, from the supplied data. "
-        f"After excluding {train['missing_target_rows']} rows with missing labels, {train['usable_labelled_rows']:,} labelled source rows were available; "
-        f"{final_rows:,} rows in {final_source} supported final evaluation. The predictors comprised "
+        f"The skill inferred the {data['task']['type']} target {data['task']['target']}. "
+        f"Excluding {train['missing_target_rows']} missing-label rows left {train['usable_labelled_rows']:,} labelled source rows; "
+        f"{final_rows:,} rows in {final_source} supported final evaluation. Predictors comprised "
         f"{train['predictor_type_counts'].get('numeric', 0)} numeric and {train['predictor_type_counts'].get('categorical', 0)} categorical variables.",
     )
     if train_positive is not None:
@@ -478,7 +497,7 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
         document,
         class_text
         + (f", a {imbalance.get('majority_to_minority_ratio'):.2f}:1 majority-to-minority ratio" if imbalance else "")
-        + f". Missing values affected {train['rows_with_any_missing']} source rows"
+        + f". Missingness affected {train['rows_with_any_missing']} source rows"
         + (f" and {test.get('rows_with_any_missing', 0)} test rows" if test else "")
         + f". There were {train['exact_duplicate_rows']} exact source duplicates and {predictor_overlap.get('test_rows_matching_train_predictors', 0)} supplied-test rows matching training predictors.",
         first_line=True,
@@ -488,7 +507,7 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     if outlier_count:
         add_text(
             document,
-            f"Profiling identified {outlier_count:,} IQR-flagged numeric values across {outlier_columns} predictors. They were retained: median imputation addressed missingness, scaling stabilized logistic regression, and the tree model did not require row deletion.",
+            f"Profiling found {outlier_count:,} IQR-flagged values across {outlier_columns} numeric predictors. They were retained: median imputation handled missingness, scaling stabilized logistic regression, and the tree model required no row deletion.",
             first_line=True,
         )
 
@@ -496,23 +515,19 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     validation = data["method"]["validation"]
     add_text(
         document,
-        f"Numeric values were median-imputed; categorical values were most-frequent-imputed and one-hot encoded with unseen-category handling. "
-        f"Numeric scaling was applied only to logistic regression. Every learned transformation stayed inside a {validation['folds']}-fold shuffled stratified pipeline (seed {validation['random_seed']}). "
-        f"Macro-F1 was the primary selection metric because accuracy alone would reward the majority class.",
+        f"Numeric values were median-imputed; categoricals were most-frequent-imputed and one-hot encoded with unseen-category handling. "
+        f"Only logistic regression used scaling. Every learned transformation stayed inside a {validation['folds']}-fold shuffled stratified pipeline (seed {validation['random_seed']}). "
+        f"Macro-F1 was the primary selection metric because accuracy alone would reward the majority class [3].",
     )
     tuning = data["method"]["tuning"]["search"]
-    search_text = "; ".join(
-        f"{MODEL_LABELS.get(model, model)}: "
-        + ", ".join(readable_parameter(name, values) for name, values in details.get("parameter_values", {}).items())
-        for model, details in tuning.items()
-    )
+    search_text = "; ".join(search_summary(model, details) for model, details in tuning.items())
     selected_parameter_text = ", ".join(
         readable_parameter(name, value) for name, value in data["method"].get("selected_parameters", {}).items()
     ) or "defaults"
     add_text(
         document,
-        f"The fixed search compared {', '.join(MODEL_LABELS.get(model, model) for model in tuning)} with a most-frequent dummy baseline ({search_text}); selected settings were {selected_parameter_text}. "
-        f"Search stopped after the predefined grids were evaluated once on the fixed folds. Final-test metrics were not used for feature, parameter, threshold, or model selection.",
+        f"The fixed search compared {', '.join(MODEL_LABELS.get(model, model) for model in tuning)} with a most-frequent dummy ({search_text}); selected settings: {selected_parameter_text}. "
+        f"The predefined grids ran once on fixed folds; final-test metrics did not influence feature, parameter, threshold, or model selection.",
         first_line=True,
         justify=False,
     )
@@ -526,8 +541,8 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     )
     if excluded and sensitivity:
         feature_text = (
-            f"The aggregate-like feature {excluded} was highly correlated with component predictors and had uncertain prediction-time provenance. "
-            f"A development-only removal check changed macro-F1 by {deltas}. Because these changes were smaller than fold variability, it was dropped before final evaluation to reduce unresolved leakage risk."
+            f"The aggregate-like {excluded} was highly correlated with components and had uncertain prediction-time provenance. "
+            f"A development-only removal check changed macro-F1 by {deltas}. Because both changes were below fold variability, it was dropped before final evaluation to reduce leakage risk."
         )
     else:
         feature_text = "No report-critical aggregate warning remained unresolved; the final feature set followed the recorded schema and leakage checks."
@@ -552,7 +567,7 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
     p = document.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.keep_with_next = True
-    p.add_run().add_picture(str(figure_path), width=Inches(3.0))
+    p.add_run().add_picture(str(figure_path), width=Inches(2.75))
     add_caption(document, f"Figure 1. Final macro-F1 and {focus_metric_label(data).lower()}.")
 
     selected = data["results"]["selected_final_metrics"]
@@ -588,14 +603,6 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
         set_table_widths(class_table, (0.85, 0.6, 0.65, 0.55, 0.6))
         format_table(class_table, font_size=7.5)
         add_caption(document, f"Table 2. Five lowest-recall classes for {selected_label}; full matrix retained in artifacts.")
-
-    page_two = document.add_section(WD_SECTION.NEW_PAGE)
-    page_two.left_margin = Inches(0.75)
-    page_two.right_margin = Inches(0.75)
-    page_two.top_margin = Inches(1.0)
-    page_two.bottom_margin = Inches(0.8)
-    set_columns(page_two, 2, 360)
-    add_vertical_spacer(document)
 
     add_heading(document, "Findings")
     final_models = data["results"]["final_metrics_by_model"]
@@ -639,6 +646,43 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
         discrimination = "Probability discrimination metrics were not reported because their required task semantics were unavailable."
     add_text(document, discrimination + " The selected model reflects the declared class-balanced objective, not dominance on every metric.", first_line=True)
 
+    if data["task"].get("type") == "binary":
+        selected_matrix = selected_metrics["confusion_matrix"]["values"]
+        other_matrix = other_metrics["confusion_matrix"]["values"]
+        fewer_false_negatives = other_matrix[1][0] - selected_matrix[1][0]
+        extra_false_positives = selected_matrix[0][1] - other_matrix[0][1]
+        if fewer_false_negatives > 0 and extra_false_positives > 0:
+            cost_ratio = extra_false_positives / fewer_false_negatives
+            add_text(
+                document,
+                f"Against {other_name.lower()}, the selected model traded {fewer_false_negatives:,} fewer false negatives for {extra_false_positives:,} additional false positives. "
+                f"It has lower observed error cost only if a false negative costs more than {cost_ratio:.2f} times a false positive; this post-hoc interpretation did not drive selection.",
+                first_line=True,
+            )
+
+    add_heading(document, "Data quality checks")
+    quality_table = document.add_table(rows=1, cols=2)
+    quality_table.cell(0, 0).text = "Check"
+    quality_table.cell(0, 1).text = "Observed result"
+    blocking_warnings = sum(
+        warning.get("severity") == "blocking"
+        for warning in data.get("quality_findings", {}).get("warnings", [])
+    )
+    quality_rows = (
+        ("Rows with missing values", f"{train['rows_with_any_missing']:,}"),
+        ("Exact duplicate rows", f"{train['exact_duplicate_rows']:,}"),
+        ("IQR-flagged values", f"{outlier_count:,}"),
+        ("Test rows matching train predictors", f"{predictor_overlap.get('test_rows_matching_train_predictors', 0):,}"),
+        ("Unresolved blocking warnings", f"{blocking_warnings:,}"),
+    )
+    for check, result in quality_rows:
+        row = quality_table.add_row().cells
+        row[0].text = check
+        row[1].text = result
+    set_table_widths(quality_table, (2.25, 1.0))
+    format_table(quality_table, font_size=7.5)
+    add_caption(document, "Table 3. Automated data-quality checks before evaluation.")
+
     add_heading(document, "Discussion")
     diagnostics = data["method"].get("selection_diagnostics", {})
     reference_model = diagnostics.get("reference_model", "logistic_regression")
@@ -652,6 +696,18 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
         f"The predefined practical-tie result was {str(diagnostics.get('practical_tie', False)).lower()} using a one-standard-error reference ({diagnostics.get('standard_error', 0):.4f}), leading to {selected_name.lower()}. "
         f"Operational error costs could still justify the alternative model.",
     )
+
+    page_two = document.add_section(WD_SECTION.NEW_PAGE)
+    page_two.left_margin = Inches(0.75)
+    page_two.right_margin = Inches(0.75)
+    # Keep the second page's original report margins. Together with the chained
+    # reference paragraphs below, this lets the left column fill naturally and
+    # moves the intact References block to the top of the right column.
+    page_two.top_margin = Inches(1.0)
+    page_two.bottom_margin = Inches(0.8)
+    set_columns(page_two, 2, 360)
+
+    add_heading(document, "Limitations")
     add_text(
         document,
         "The analysis assumes independent rows and stable train/test collection. It does not establish causal effects, fairness across unobserved groups, probability calibration, or prediction-time availability of every retained feature. "
@@ -659,17 +715,47 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
         first_line=True,
     )
 
-    column = document.add_paragraph()
-    column.add_run().add_break(WD_BREAK.COLUMN)
-    add_vertical_spacer(document)
+    add_heading(document, "SKILL generalisation")
+    add_text(
+        document,
+        "The reusable SKILL enforces typed data checks, fold-local preprocessing, a dummy baseline, an adaptive challenger, fixed selection, immutable runs, and independent verification from machine-readable evidence.",
+    )
+    add_text(
+        document,
+        "Phase 5 completed 13 forward-test scenarios. Four differently shaped synthetic modelling cases ran end to end, while four unsafe or unresolved inputs produced a typed refusal or human checkpoint; the remaining cases exercised formats, class structures, report branches, and verification. These tests demonstrate behavioral coverage, not guaranteed predictive accuracy on every future dataset.",
+        first_line=True,
+        keep_together=True,
+    )
+    add_text(
+        document,
+        "The one-command route stops before cross-validation when time or group dependence is unresolved and before final-test evaluation when aggregate availability is uncertain. A new immutable run must record the explicit human decision; semantic uncertainty is never converted into an automatic feature or validation choice.",
+        first_line=True,
+        keep_together=True,
+    )
+    add_text(
+        document,
+        "The supported envelope covers CSV, TSV, Excel, directory, and safe ZIP inputs for binary or single-label multiclass classification. Regression, multilabel, text-only, and grouped or ordered validation are refused rather than silently approximated.",
+        first_line=True,
+        keep_together=True,
+    )
 
     add_heading(document, "Reproducibility and verification")
     versions = data.get("reproducibility", {}).get("runtime_versions", {})
     add_text(
         document,
-        f"RUN {data['run_id']} records the data and skill fingerprints, seed, fold assignments, candidate settings, predictions, and package versions "
-        f"(Python {versions.get('python')}; scikit-learn {versions.get('scikit-learn')}). A separate verifier recomputed {sum(data['source_evidence']['verification_checks'].values())} checks from saved predictions, including all scalar metrics and the confusion matrix; all passed.",
+        f"{data['run_id']} records the data and skill fingerprints, seed, fold assignments, candidate settings, predictions, and package versions "
+        f"(Python {versions.get('python')}; scikit-learn {versions.get('scikit-learn')} [2]). A separate verifier recomputed {sum(data['source_evidence']['verification_checks'].values())} checks from saved predictions, including all scalar metrics and the confusion matrix; all passed.",
     )
+    if data["task"].get("type") == "binary" and data["task"].get("positive_label") is not None:
+        matrix_values = selected_metrics["confusion_matrix"]["values"]
+        tn, fp = matrix_values[0]
+        fn, tp = matrix_values[1]
+        add_text(
+            document,
+            f"A manual reconstruction also reconciled {tn:,} + {fp:,} + {fn:,} + {tp:,} = {selected_metrics['evaluated_rows']:,} evaluated rows and positive recall "
+            f"{tp:,} / ({tp:,} + {fn:,}) = {selected_metrics['per_class'][positive]['recall']:.7f}. This verifies arithmetic and label orientation, not feature provenance or row independence.",
+            first_line=True,
+        )
 
     add_heading(document, "Conclusion")
     if data["task"].get("type") == "binary" and data["task"].get("positive_label") is not None:
@@ -686,10 +772,11 @@ def build_document(data: dict[str, Any], args: argparse.Namespace) -> None:
 
     add_heading(document, "References")
     if "hist_gradient_boosting" in final_models:
-        add_text(document, "[1] Friedman, J. H. (2001). Greedy Function Approximation: A Gradient Boosting Machine. Annals of Statistics, 29, 1189-1232.")
+        add_text(document, "[1] Friedman, J. H. (2001). Greedy Function Approximation: A Gradient Boosting Machine. Annals of Statistics, 29, 1189-1232.", keep_with_next=True)
     else:
-        add_text(document, "[1] Breiman, L. (2001). Random Forests. Machine Learning, 45, 5-32.")
-    add_text(document, "[2] Pedregosa, F. et al. (2011). Scikit-learn: Machine Learning in Python. JMLR, 12, 2825-2830.")
+        add_text(document, "[1] Breiman, L. (2001). Random Forests. Machine Learning, 45, 5-32.", keep_with_next=True)
+    add_text(document, "[2] Pedregosa, F. et al. (2011). Scikit-learn: Machine Learning in Python. JMLR, 12, 2825-2830.", keep_with_next=True)
+    add_text(document, "[3] He, H. and Garcia, E. A. (2009). Learning from Imbalanced Data. IEEE TKDE, 21(9), 1263-1284. doi:10.1109/TKDE.2008.239.")
 
     replace_header_footer(document, args.full_name)
     args.output_docx.parent.mkdir(parents=True, exist_ok=True)
