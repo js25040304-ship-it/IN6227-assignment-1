@@ -33,7 +33,7 @@ Recommended decision: **content and GitHub source release accepted; NTULearn sub
 | Human oversight | Concrete stop/review/decision actions are described | Pass |
 | Critical evaluation | `composite_rank` removal is challenged conditionally | Pass |
 | Trustworthiness | Manual confusion-matrix/recall check and automated 54-check verification are distinguished | Pass |
-| Latest Skill Markdown available to teacher | Public `main` is commit `6141425...`; anonymous raw `SKILL.md` access verified | Pass |
+| Latest Skill Markdown available to teacher | Public `main` contains reviewed source commit `6141425...`; anonymous raw `SKILL.md` access verified | Pass |
 | Single PDF for NTULearn | Three-page package: two-page report plus one-page Reflection | Pass; not uploaded |
 
 ## Current verification evidence
@@ -63,7 +63,7 @@ The prior compiler gap is closed: an official Apple Silicon Tectonic 0.17.0 bina
 
 ### M2. Public GitHub did not contain the current final implementation — resolved
 
-The reviewed 24-file source whitelist was committed locally and pushed to public `main`. Remote inspection now returns `6141425bb283d3a9eb8b5b69a1ab4ff7895218b5`, and an anonymous request successfully reads the current `tabular-classification-report/SKILL.md`.
+The reviewed 24-file source whitelist was committed as `6141425bb283d3a9eb8b5b69a1ab4ff7895218b5` and pushed to public `main`. The public branch contains that source commit, and an anonymous request successfully reads the current `tabular-classification-report/SKILL.md`.
 
 Impact: the former release blocker is closed. Supplied course data, assignment files, private run artifacts, temporary renders, and identity-bearing PDFs remain excluded from GitHub.
 

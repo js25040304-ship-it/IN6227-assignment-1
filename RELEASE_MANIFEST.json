@@ -37,7 +37,7 @@
     "visibility": "public",
     "remote_source_uploaded": true,
     "latest_local_source_uploaded": true,
-    "remote_main_commit": "6141425bb283d3a9eb8b5b69a1ab4ff7895218b5",
+    "verified_source_commit": "6141425bb283d3a9eb8b5b69a1ab4ff7895218b5",
     "teacher_access_verified": true
   },
   "report_review": {
