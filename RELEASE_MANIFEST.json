@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "release_status": "submission-package-verified-not-released",
-  "frozen_at": null,
+  "release_status": "github-source-released-ntulearn-pending",
+  "frozen_at": "2026-09-23",
   "reviewed_at": "2026-09-23",
   "skill_name": "tabular-classification-report",
   "skill_sha256": "c3c476dbd99c828633fd3d29ab7484eddfa5785553280b8ac0153f8810ce2b4e",
@@ -36,7 +36,8 @@
     "url": "https://github.com/js25040304-ship-it/IN6227-assignment-1",
     "visibility": "public",
     "remote_source_uploaded": true,
-    "latest_local_source_uploaded": false,
+    "latest_local_source_uploaded": true,
+    "remote_main_commit": "6141425bb283d3a9eb8b5b69a1ab4ff7895218b5",
     "teacher_access_verified": true
   },
   "report_review": {
@@ -53,11 +54,9 @@
     "reflection_review": "accepted-no-critical-or-major-defects",
     "reflection_author_confirmation": "confirmed-by-user-on-2026-09-20",
     "release_ready": false,
-    "reason": "Final local three-page package passed Reflection, structural, content, hyperlink, and visual review; the optional LaTeX route passed its repaired regressions, six local PDF compilations, and 12-page visual review; latest safe source changes are not yet pushed, and NTULearn has not been submitted"
+    "reason": "Final local three-page package passed Reflection, structural, content, hyperlink, and visual review; the optional LaTeX route passed its repaired regressions, six local PDF compilations, and 12-page visual review; the reviewed source is public on GitHub and anonymously readable; NTULearn has not been submitted"
   },
   "remaining_release_inputs": [
-    "push the reviewed local commit only after user authorization",
-    "re-verify anonymous access to the pushed GitHub Skill Markdown",
     "upload the verified PDF to NTULearn only after user authorization"
   ]
 }

@@ -1,7 +1,7 @@
 # Final submission audit
 
 Date: 2026-09-23
-Status: local package verified; not committed, pushed, or submitted
+Status: source committed and publicly verified on GitHub; PDF not submitted to NTULearn
 
 ## Assignment requirements
 
@@ -10,7 +10,7 @@ Status: local package verified; not committed, pushed, or submitted
 | First page identifies student, assignment, and Variant 2 | HU YINGXIN; G2608370F; IN6227-Assignment-1; Variant-2 | Pass |
 | Main generated report is no more than two pages | Main report is exactly two A4 pages | Pass |
 | Model name/version and LLM interface are disclosed | `gpt-5.6-sol` / GPT-5.6 Sol / Codex Desktop (medium); `deepseek-flash` / DeepSeek-V4.1-Flash / DeepSeek API | Pass |
-| GitHub Skill Markdown is linked and teacher-readable | Public repository link is present and was anonymously readable | Pass for current remote; recheck after later push |
+| GitHub Skill Markdown is linked and teacher-readable | Public `main` commit `6141425...` and anonymous raw `SKILL.md` access were verified | Pass |
 | Reflection covers Human oversight, Critical evaluation, and Trustworthiness | Three explicit headings on a separate one-page Reflection | Pass |
 | Reflection is outside the two-page main-report limit | Final package pages 1-2 are the main report; page 3 is labelled Reflection | Pass |
 
@@ -38,7 +38,5 @@ Status: local package verified; not committed, pushed, or submitted
 
 ## Remaining external actions
 
-1. Review the exact source whitelist in `reviews/GIT-SUBMISSION-WHITELIST.txt`.
-2. With explicit authorization, push only the reviewed local commit; do not publish the course dataset, assignment brief, private run artifacts, supplied template, temporary renders, or `output/` PDFs.
-3. Recheck the exact public GitHub Skill Markdown URL anonymously after the push.
-4. Upload the verified PDF to NTULearn only after explicit authorization.
+1. Keep the exact GitHub source whitelist unchanged unless a later correction is required.
+2. Upload the verified PDF to NTULearn only after explicit authorization.

@@ -2,13 +2,13 @@
 
 Date: 2026-09-21; final verification refreshed 2026-09-23
 Scope: Variant 2 Skill, generated main report, Reflection, release state, current tests, and security review
-Mode: final post-repair assessment; no commit, push, or NTULearn upload was performed
+Mode: final post-repair assessment; GitHub source release verified; no NTULearn upload was performed
 
 ## Overall verdict
 
-The local submission PDF is content-complete and visually submission-ready. The preferred local DOCX/PDF workflow is well tested, and the advertised optional LaTeX source renderer now passes its regression and generalisation checks. The repository is not yet release-ready only because the public GitHub branch still points to the older commit rather than the current local version, and no external submission has been authorized.
+The local submission PDF is content-complete and visually submission-ready. The preferred local DOCX/PDF workflow is well tested, the optional LaTeX renderer passes its regression, compilation, and visual checks, and the reviewed source is publicly available on GitHub at commit `6141425bb283d3a9eb8b5b69a1ab4ff7895218b5`.
 
-Recommended decision: **content accepted; controlled release still pending**. Keep the current final PDF, use the reviewed exact source whitelist, and commit or push only after explicit user approval.
+Recommended decision: **content and GitHub source release accepted; NTULearn submission pending**. Submit only the verified three-page PDF when explicitly authorized.
 
 ## One-to-one assignment check
 
@@ -33,7 +33,7 @@ Recommended decision: **content accepted; controlled release still pending**. Ke
 | Human oversight | Concrete stop/review/decision actions are described | Pass |
 | Critical evaluation | `composite_rank` removal is challenged conditionally | Pass |
 | Trustworthiness | Manual confusion-matrix/recall check and automated 54-check verification are distinguished | Pass |
-| Latest Skill Markdown available to teacher | Remote `main` is still commit `52c249e...`; current local changes are not present | Release blocker |
+| Latest Skill Markdown available to teacher | Public `main` is commit `6141425...`; anonymous raw `SKILL.md` access verified | Pass |
 | Single PDF for NTULearn | Three-page package: two-page report plus one-page Reflection | Pass; not uploaded |
 
 ## Current verification evidence
@@ -61,11 +61,11 @@ Post-repair evidence: 19 focused tests pass; all six modelled cases generate `.t
 
 The prior compiler gap is closed: an official Apple Silicon Tectonic 0.17.0 binary was checksum-verified against the GitHub release digest and used from a temporary directory. The compiler and cache are not part of the repository or submission.
 
-### M2. Public GitHub does not contain the current final implementation
+### M2. Public GitHub did not contain the current final implementation — resolved
 
-Read-only remote inspection shows `origin/main` and local `HEAD` at `52c249e07fa9d72de9a34bbcb831a6e86a65ce54`. The repaired work remains modified or untracked locally. The repository link works, but a teacher opening it now receives the older Skill rather than the version evidenced by the final PDF and PHASE5-RUN-012.
+The reviewed 24-file source whitelist was committed locally and pushed to public `main`. Remote inspection now returns `6141425bb283d3a9eb8b5b69a1ab4ff7895218b5`, and an anonymous request successfully reads the current `tabular-classification-report/SKILL.md`.
 
-Impact: this is a release blocker, not a defect in the local PDF. M1 and L1 are now resolved and the curated file list is recorded, but no push is authorized yet.
+Impact: the former release blocker is closed. Supplied course data, assignment files, private run artifacts, temporary renders, and identity-bearing PDFs remain excluded from GitHub.
 
 ## Resolved Low finding and release warning
 
@@ -87,7 +87,7 @@ Release control: use `reviews/GIT-SUBMISSION-WHITELIST.txt`; do not use a broad 
 
 Strong evidence: typed refusal/checkpoint behavior, fold-local preprocessing, adaptive challenger selection, immutable runs, all-model verification, current 13-scenario forward testing, and a working one-command local PDF route.
 
-The earlier LaTeX overclaim is resolved by regression-tested parity. The remaining grading risk is release-state mismatch: the current local source is stronger than the source visible on the public branch.
+The earlier LaTeX overclaim and release-state mismatch are resolved. The public source, current Skill fingerprint, final audit, and linked report now agree.
 
 ### Report
 
@@ -99,7 +99,5 @@ The Reflection directly covers Human oversight, Critical evaluation, and Trustwo
 
 ## Ordered completion plan
 
-1. Review the exact whitelist in `reviews/GIT-SUBMISSION-WHITELIST.txt`; keep datasets, supplied course files, runs, temporary renders, and identity-bearing PDFs out of GitHub.
-2. Push the reviewed local commit only after explicit user approval.
-3. Verify the public raw `SKILL.md` anonymously after any later authorized push.
-4. Upload the verified single PDF to NTULearn only after explicit authorization.
+1. Keep datasets, supplied course files, runs, temporary renders, and identity-bearing PDFs out of GitHub.
+2. Upload the verified single PDF to NTULearn only after explicit authorization.

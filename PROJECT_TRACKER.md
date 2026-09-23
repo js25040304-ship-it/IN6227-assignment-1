@@ -307,15 +307,15 @@ Record interventions at the time they happen. These entries will be the source f
 | H020 | 2026-09-20 | The final English Reflection was translated into Chinese for an author-side content check | User read the translation and explicitly confirmed that the account was accurate | The first-person Reflection is now author-confirmed; no extra text was added merely to increase word count | `reflection/REFLECTION_DRAFT.md`; project conversation |
 | H021 | 2026-09-21 | The final grader audit found a broken optional LaTeX path and a low-severity label-injection risk | User explicitly requested failing tests first, full repair, revalidation, and an exact submission list while forbidding push | Added regressions before implementation changes, repaired the renderer and adjacent URL sink, passed 55 tests and PHASE5-RUN-012 13/13, generated six LaTeX reports, and created a release whitelist without staging, committing, pushing, or uploading | `reviews/FINAL-GRADER-AUDIT-2026-09-21.md`; `reviews/GIT-SUBMISSION-WHITELIST.txt`; project conversation |
 | H022 | 2026-09-23 | Source-level LaTeX tests passed, but the route had not been locally compiled and its balanced columns recreated avoidable blank space | User asked to organize and finish every remaining issue | Downloaded and checksum-verified the official Tectonic 0.17.0 Apple Silicon binary into a temporary directory, compiled all six modelled variants, added a failing natural-flow regression, removed forced balancing, reran 56 tests and PHASE5-RUN-013, and visually inspected all 12 compiled pages | `tabular-classification-report/assets/report_template.tex`; `tests/test_render_latex_report.py`; `tmp/latex-route-qa/run012-compiled/`; project conversation |
+| H023 | 2026-09-23 | The final reviewed source was committed locally but the public branch still showed the prior version | User explicitly authorized submission to GitHub | Pushed commit `6141425` to public `main`, verified the remote commit, repository visibility, default branch, and anonymous raw `SKILL.md` access; no NTULearn upload occurred | Public GitHub repository; `RELEASE_MANIFEST.json`; project conversation |
 
 ## Current next actions
 
-1. After explicit push authorization, push the reviewed local commit and recheck anonymous access to the Skill Markdown.
-2. Upload the verified PDF to NTULearn only after explicit authorization.
+1. Upload the verified PDF to NTULearn only after explicit authorization.
 
 ## Open questions
 
-- The public repository is anonymously readable, but the latest local report and disclosure hardening changes have not been committed or pushed.
+- The public repository is anonymously readable and `main` contains the reviewed final source at commit `6141425`; the final PDF remains local for separate NTULearn submission.
 - Both LLM environments are disclosed: `gpt-5.6-sol` (GPT-5.6 Sol, medium) in Codex Desktop, followed by `deepseek-flash` (DeepSeek-V4.1-Flash during the recorded work period) through the DeepSeek API.
 - Publishing the supplied dataset remains out of scope; the default and current whitelist exclude it.
 - The verified dependency versions are pinned in `tabular-classification-report/requirements.txt`; RUN-008 remains immutable real-data evidence, while 56 unit tests, PHASE5-RUN-013, the official Skill validator, six LaTeX PDF compilations, a 12-page visual review, and the one-command PDF QA passed in the repository-local Python 3.13 environment.
