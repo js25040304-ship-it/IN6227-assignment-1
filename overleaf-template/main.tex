@@ -11,6 +11,7 @@
 \usepackage{microtype}
 \usepackage{booktabs,tabularx,array,colortbl}
 \usepackage[font=small,labelfont=bf,hypcap=false]{caption}
+\captionsetup[table]{skip=2pt}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{xurl}
@@ -114,7 +115,6 @@ supervise training, so they were excluded before modelling:
 \centering
 \captionof{table}{Verified data profile for the two supplied splits.}
 \label{tab:profile}
-\vspace{2pt}
 {\normalsize
 \begin{tabularx}{\columnwidth}{@{}MDDDDD@{}}
 \toprule
@@ -189,7 +189,6 @@ inform any feature, parameter, threshold or model choice.
 \centering
 \captionof{table}{Development and held-out comparison (selected model in bold).}
 \label{tab:models}
-\vspace{2pt}
 {\normalsize
 \begin{tabularx}{\columnwidth}{@{}LCCCC@{}}
 \toprule
@@ -244,7 +243,6 @@ Logistic & 0.761 & 0.762 & 0.570 & 0.696 \\
 \centering
 \captionof{table}{Held-out confusion counts (\texttt{yes} positive).}
 \label{tab:confusion}
-\vspace{2pt}
 {\normalsize
 \begin{tabularx}{\columnwidth}{@{}LCCCC@{}}
 \toprule
@@ -256,6 +254,7 @@ Random forest & 8,425 & 1,740 & 723 & 2,445 \\
 \bottomrule
 \end{tabularx}}
 \end{minipage}
+\par\vspace{5pt}
 
 The dummy baseline is a real floor: answering \texttt{no} everywhere returns 0.762 accuracy but macro-F1 0.433 and balanced accuracy 0.500, the last matching the class prevalence. Both substantive models clear it on the class-balanced measures (balanced accuracy 0.746 and 0.800).
 
