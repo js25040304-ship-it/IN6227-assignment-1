@@ -1,16 +1,15 @@
-% LaTeX report template for the tabular-classification-report skill.
-% Filled by scripts/render_latex_report.py from report/report_data.json.
-% Every number in the rendered output comes from that artifact, so the report
-% cannot drift from the verified run. Do not hand-edit generated output.
+% Overleaf-ready IN6227 submission.
+% The visual system is adapted from the compact ICML two-column paper style,
+% while preserving the assignment's A4, 10-point Times, identity, and
+% two-page main-report requirements. The Reflection begins on page 3.
 \documentclass[10pt,a4paper,twocolumn]{article}
 
-\usepackage[left=0.72in,right=0.72in,top=0.95in,bottom=0.95in]{geometry}
+\usepackage[left=0.72in,right=0.72in,top=0.78in,bottom=0.78in]{geometry}
 \setlength{\columnsep}{0.22in}
 \usepackage[T1]{fontenc}
 \usepackage{newtxtext,newtxmath}
 \usepackage{microtype}
 \usepackage{booktabs,tabularx,array,colortbl}
-\usepackage{balance}
 \usepackage[font=small,labelfont=bf,hypcap=false]{caption}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
@@ -18,55 +17,89 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usepackage[colorlinks=true,urlcolor=blue!55!black,linkcolor=black]{hyperref}
+\hypersetup{
+  pdftitle={IN6227 Assignment 1 - Variant 2},
+  pdfauthor={HU YINGXIN},
+  pdfsubject={Leakage-Aware Tabular Classification and Reflection}
+}
 
-\definecolor{ink}{RGB}{31,42,55}
-\definecolor{muted}{RGB}{92,103,115}
-\definecolor{barA}{RGB}{54,86,131}
-\definecolor{barB}{RGB}{191,120,58}
+\definecolor{ink}{RGB}{24,37,55}
+\definecolor{muted}{RGB}{91,102,116}
+\definecolor{accent}{RGB}{35,78,119}
+\definecolor{soft}{RGB}{234,240,246}
+\definecolor{barA}{RGB}{49,94,137}
+\definecolor{barB}{RGB}{183,91,58}
 
 \newcolumntype{L}{>{\raggedright\arraybackslash\hsize=1.5\hsize}X}
 \newcolumntype{C}{>{\centering\arraybackslash\hsize=0.875\hsize}X}
 \newcolumntype{M}{>{\raggedright\arraybackslash\hsize=1.6\hsize}X}
 \newcolumntype{D}{>{\centering\arraybackslash\hsize=0.68\hsize}X}
 
-\titleformat{\section}{\normalfont\fontsize{10}{12}\selectfont\bfseries\color{ink}}{}{0pt}{}
-\titlespacing*{\section}{0pt}{5pt}{1.5pt}
+\titleformat{\section}{\normalfont\fontsize{10}{11.5}\selectfont\bfseries\color{accent}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{5.5pt}{1.8pt}
 \setlength{\parindent}{1em}
 \setlength{\parskip}{0.5pt}
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.12}
-\raggedbottom
+\flushbottom
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\fontsize{8}{10}\selectfont\color{muted}IN6227 Data Mining / Assignment 1 / Variant 2}
-\fancyfoot[L]{\fontsize{8}{10}\selectfont\color{muted}HU YINGXIN}
-\fancyfoot[R]{\fontsize{8}{10}\selectfont\color{muted}\thepage}
+\fancyhead[L]{\fontsize{8}{10}\selectfont\color{muted}IN6227 Data Mining}
+\fancyhead[R]{\fontsize{8}{10}\selectfont\color{muted}Assignment 1 / Variant 2}
+\fancyfoot[L]{\fontsize{8}{10}\selectfont\color{muted}HU YINGXIN / G2608370F}
+\fancyfoot[R]{\fontsize{8}{10}\selectfont\color{muted}Page \thepage}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 \setlength{\headheight}{11pt}
 
+\fancypagestyle{reflection}{%
+  \fancyhf{}
+  \fancyhead[L]{\fontsize{8}{10}\selectfont\color{muted}IN6227 Data Mining}
+  \fancyhead[R]{\fontsize{8}{10}\selectfont\color{muted}Reflection / Variant 2}
+  \fancyfoot[L]{\fontsize{8}{10}\selectfont\color{muted}Reflection -- outside the two-page main-report limit}
+  \fancyfoot[R]{\fontsize{8}{10}\selectfont\color{muted}Page \thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+
 \begin{document}
 \twocolumn[{%
-  \begin{center}
-    {\fontsize{19}{22}\selectfont\bfseries\color{ink}Leakage-Aware Tabular Classification\par}
-    \vspace{5pt}
-    {\fontsize{10}{12}\selectfont HU YINGXIN \quad G2608370F\par}
-    {\fontsize{10}{12}\selectfont IN6227-Assignment-1 \quad Variant-2\par}
-    \vspace{2pt}
-    {\fontsize{8.5}{10}\selectfont\color{muted}
-      LLMs: \texttt{gpt-5.6-sol; deepseek-flash} (GPT-5.6 Sol; DeepSeek-V4.1-Flash)\par}
-    {\fontsize{8.5}{10}\selectfont\color{muted}
-      Interfaces: Codex Desktop; DeepSeek API (OpenAI-compatible Responses API)\quad Codex reasoning: medium (Codex)\par}
-    {\fontsize{8.5}{10}\selectfont\color{muted}
-      Skill Markdown: \href{https://github.com/js25040304-ship-it/IN6227-assignment-1}{GitHub repository}\par}
-  \end{center}
-  \vspace{3pt}
-  \hrule height 0.5pt
+  \color{accent}\hrule height 0.9pt
   \vspace{8pt}
+  \begin{center}
+    {\fontsize{16}{18.5}\selectfont\bfseries\color{ink}Leakage-Aware Tabular Classification\par}
+    \vspace{4pt}
+    {\fontsize{9.5}{11}\selectfont\bfseries HU YINGXIN \enspace | \enspace G2608370F
+      \enspace | \enspace IN6227-Assignment-1 \enspace | \enspace Variant-2\par}
+    \vspace{3pt}
+    {\fontsize{8.2}{9.8}\selectfont\color{muted}
+      LLMs: gpt-5.6-sol (GPT-5.6 Sol, medium reasoning) via Codex Desktop;
+      deepseek-flash (DeepSeek-V4.1-Flash) via DeepSeek API\par}
+    {\fontsize{8.2}{9.8}\selectfont\color{muted}
+      Reproducible SKILL: \href{https://github.com/js25040304-ship-it/IN6227-assignment-1}{github.com/js25040304-ship-it/IN6227-assignment-1}\par}
+  \end{center}
+  \vspace{5pt}
+  \setlength{\fboxsep}{5pt}%
+  \noindent\colorbox{soft}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+      \centering
+      \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}cccc@{}}
+        {\fontsize{11}{12}\selectfont\bfseries\color{accent}14} &
+        {\fontsize{11}{12}\selectfont\bfseries\color{accent}0.770} &
+        {\fontsize{11}{12}\selectfont\bfseries\color{accent}0.769} &
+        {\fontsize{11}{12}\selectfont\bfseries\color{accent}0.772} \\
+        {\fontsize{7.7}{9}\selectfont\color{muted}final predictors} &
+        {\fontsize{7.7}{9}\selectfont\color{muted}CV macro-F1} &
+        {\fontsize{7.7}{9}\selectfont\color{muted}held-out macro-F1} &
+        {\fontsize{7.7}{9}\selectfont\color{muted}positive recall}
+      \end{tabular*}%
+    }%
+  }
+  \vspace{5pt}
+  \color{accent}\hrule height 0.45pt
+  \vspace{7pt}
 }]
-
-\balance
 
 \section*{DATA AND CLEANING}
 The supplied archive contained one binary target, \texttt{label} (\texttt{no}/\texttt{yes}), and 15
@@ -198,7 +231,7 @@ Logistic & 0.761 & 0.762 & 0.570 & 0.696 \\
 ]
 \addplot[fill=barA,draw=none] coordinates {(0.433,Dummy) (0.762,Logistic) (0.769,Forest)};
 \addplot[fill=barB,draw=none] coordinates {(0.000,Dummy) (0.570,Logistic) (0.772,Forest)};
-\legend{Test macro-F1, \texttt{yes} recall}
+\legend{Test macro-F1, \emph{yes} recall}
 \end{axis}
 \end{tikzpicture}
 \captionof{figure}{Held-out macro-F1 and positive-class recall by model.}
@@ -313,5 +346,53 @@ verifies the computation, not the provenance assumptions above.
 \emph{IEEE Trans.\ Knowl.\ Data Eng.}, 21(9), 1263--1284.
 \href{https://doi.org/10.1109/TKDE.2008.239}{doi:10.1109/TKDE.2008.239}.\par
 }
+
+\clearpage
+\newgeometry{left=0.86in,right=0.86in,top=0.76in,bottom=0.76in}
+\onecolumn
+\thispagestyle{reflection}
+\color{accent}\hrule height 0.9pt
+\vspace{9pt}
+\begin{center}
+  {\fontsize{17}{20}\selectfont\bfseries\color{ink}Reflection\par}
+  \vspace{4pt}
+  {\fontsize{9.5}{11}\selectfont\bfseries HU YINGXIN \enspace | \enspace G2608370F
+    \enspace | \enspace IN6227-Assignment-1 \enspace | \enspace Variant-2\par}
+\end{center}
+\vspace{5pt}
+\color{accent}\hrule height 0.45pt
+\vspace{8pt}
+
+\begingroup
+\color{ink}
+\fontsize{9.6}{11.45}\selectfont
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{2.2pt}
+
+{\noindent\fontsize{11}{13}\selectfont\bfseries\color{accent}HUMAN OVERSIGHT\par}
+\vspace{2pt}
+
+I treated the SKILL's outputs as proposals to review rather than results to accept automatically. The prompts were only the interface through which I issued decisions; the oversight consisted of checking evidence, stopping progression, and deciding whether the workflow was safe to continue. When the workflow proposed moving to modelling, I required the unresolved profiling defects to be repaired first. Later, although the initial Phase 5 tests passed, I questioned whether the generalization checks were broad enough. This reopened the review and exposed unsupported report branches, incomplete all-model verification, weak time/group dependency handling, and an overly fixed model pair. I required regression tests before accepting the repairs.
+
+Two LLM environments assisted the work. I used \texttt{gpt-5.6-sol} (GPT-5.6 Sol, medium reasoning) through Codex Desktop for the initial SKILL design, implementation, testing, and report workflow. I later used the \texttt{deepseek-flash} API model (served as DeepSeek-V4.1-Flash during the recorded work period) through DeepSeek's OpenAI-compatible Responses API for refinement and review. I did not treat either model as an authority: the same saved run artifacts, regression tests, and human checkpoints governed what I accepted. The numerical results in the report were rendered deterministically from verified RUN-008 artifacts rather than copied from either model's prose.
+
+My clearest modelling intervention concerned \texttt{composite\_rank}. The SKILL flagged it as aggregate-like and highly correlated, but that did not prove leakage. I reviewed the development-only comparison with and without the feature. Because removal changed Macro-F1 by less than fold variability while eliminating uncertainty about prediction-time availability, I chose to drop it before the final test was evaluated. I also chose a bounded adaptive challenger policy: histogram gradient boosting for numeric/datetime-only data and random forest for mixed categorical data, with logistic regression as the common reference. If I repeated the work, I would obtain the construction formula and availability timing for aggregate features, plus entity/time dependency information, directly from the data owner before modelling.
+
+\vspace{2pt}
+{\noindent\fontsize{11}{13}\selectfont\bfseries\color{accent}CRITICAL EVALUATION\par}
+\vspace{2pt}
+
+I found the proposed removal of \texttt{composite\_rank} worth challenging because neither its name nor its correlation was sufficient evidence of leakage. Automatically deleting it could discard legitimate predictive information; automatically keeping it because of a slightly better score could preserve post-outcome information. I agreed with removal for this run only after considering both risks. The sensitivity analysis showed that the result did not materially depend on the feature, so exclusion had little development-performance cost and produced a more defensible evaluation. The labelled final test set was not used in this decision.
+
+This remains a conditional judgement rather than a universal preprocessing rule. If domain evidence showed that \texttt{composite\_rank} was calculated solely from information available at prediction time, I would reconsider retaining it. This case showed that statistical profiling can identify a question, but cannot resolve feature provenance without human or domain evidence.
+
+\vspace{2pt}
+{\noindent\fontsize{11}{13}\selectfont\bfseries\color{accent}TRUSTWORTHINESS\par}
+\vspace{2pt}
+
+I manually reconstructed one reported result rather than relying only on the generated report. For the selected random forest, the confusion-matrix cells summed to the evaluated test size: \texttt{8,425 + 1,740 + 723 + 2,445 = 13,333}. I then calculated positive-class recall as \texttt{2,445 / (2,445 + 723) = 0.7717803}, matching the reported value. This check verified the class interpretation and denominator, not merely the displayed decimal.
+
+I kept this manual check distinct from automated verification. In final RUN-008, the verifier recomputed metrics from saved row-level predictions for the dummy baseline, logistic regression, and random forest; all 54 consistency checks passed. RUN-008 also reproduced the selected random forest's held-out Macro-F1 of \texttt{0.768752}. These checks support computational consistency, but they do not prove that every real-world assumption is correct. Feature availability and row independence still require human judgement, which is why unresolved time/group structure now stops the SKILL before cross-validation.
+\endgroup
 
 \end{document}
