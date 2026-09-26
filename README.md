@@ -1,10 +1,10 @@
-# Leakage-Aware Tabular Classification Report
+# Leakage-Aware Tabular Classification SKILL and Submission Source
 
-This repository contains the reusable Codex skill developed for IN6227 Assignment 1, Variant 2. It profiles ordinary tabular classification data, applies leakage-aware preprocessing and model selection, independently verifies saved predictions, and generates a concise evidence-backed report.
+This repository contains the reusable Codex skill developed for IN6227 Assignment 1, Variant 2, together with the reviewed LaTeX source for the final submission. The skill profiles ordinary tabular classification data, applies leakage-aware preprocessing and model selection, independently verifies saved predictions, and generates a concise evidence-backed report.
 
 The work used two disclosed LLM environments: `gpt-5.6-sol` (GPT-5.6 Sol, medium reasoning) through Codex Desktop for the initial SKILL workflow, and the `deepseek-flash` API alias (DeepSeek-V4.1-Flash during the recorded work period) through DeepSeek's OpenAI-compatible Responses API for later refinement and review. Final report numbers are generated from verified run artifacts, not copied from model prose.
 
-The repository intentionally excludes the supplied course dataset, assignment brief, report template, real run artifacts, and temporary render files.
+The repository intentionally excludes the supplied course dataset, assignment brief, course report template, real-data run artifacts, compiled submission PDF, and temporary render files.
 
 ## What the skill supports
 
@@ -30,8 +30,18 @@ design/                          Skill contract and decision-system rationale
 reviews/                         Recorded hardening and human-review evidence
 forward-tests/                   Generalization runner and summarized results
 reflection/                      Evidence-grounded Variant 2 Reflection draft
+overleaf-template/main.tex       Reviewed final report and Reflection source
 PROJECT_TRACKER.md               Requirement, decision, experiment, and oversight log
+RELEASE_MANIFEST.json            Current release state, checksums, and verification summary
 ```
+
+## Final submission source
+
+The teacher-facing submission source is [`overleaf-template/main.tex`](overleaf-template/main.tex). It is a self-contained A4 LaTeX document containing the two-page main report followed by the one-page Reflection. It compiles directly in Overleaf without external figures or a bibliography file. Create a blank Overleaf project, replace its `main.tex` with this file, and click **Recompile**.
+
+This reviewed submission source is distinct from the reusable report generator described below. Its reported numbers are grounded in the immutable RUN-008 evidence and independent verification, while its final layout was manually reviewed for the assignment's page limit and readability. The generic template in `tabular-classification-report/assets/report_template.tex` remains the correct file to edit when changing how the SKILL renders reports for new datasets.
+
+The compiled submission PDF is deliberately not published in this repository because it is the personal submission artifact. Its reviewed checksum and release state are recorded in [`RELEASE_MANIFEST.json`](RELEASE_MANIFEST.json). The student submits that PDF separately through NTULearn after the final human check.
 
 ## Environment
 
@@ -44,11 +54,11 @@ python -m pip install --upgrade pip
 python -m pip install -r tabular-classification-report/requirements.txt
 ```
 
-LibreOffice is required for the direct one-command PDF route. Overleaf is optional and is needed only if you deliberately choose the alternative LaTeX route.
+LibreOffice is required only for the reusable SKILL's direct DOCX-to-PDF route. Overleaf is not required to execute or test the SKILL; it is the chosen typesetting environment for the reviewed final submission source described above.
 
 ## Run the workflow
 
-The preferred route is one command from dataset to verified PDF. It creates a minimal internal DOCX template when no template is supplied, so it does not depend on Overleaf or on manually converting the legacy course template:
+For a new dataset, the reusable workflow's preferred route is one command from data to verified PDF. It creates a minimal internal DOCX template when no template is supplied, so this general workflow does not depend on Overleaf or on manually converting the legacy course template:
 
 ```bash
 python tabular-classification-report/scripts/run_workflow.py /path/to/dataset \
@@ -122,7 +132,7 @@ python tabular-classification-report/scripts/render_latex_report.py \
   --reasoning-effort "medium"
 ```
 
-Compile the result with pdfLaTeX. The document needs no external figures and no `.bib` file, so any LaTeX service compiles it unchanged. The layout lives in `tabular-classification-report/assets/report_template.tex`; edit that template rather than the generated file.
+For newly generated reports, compile the result with pdfLaTeX. The document needs no external figures and no `.bib` file, so any LaTeX service compiles it unchanged. The reusable layout lives in `tabular-classification-report/assets/report_template.tex`; edit that template rather than an automatically generated run file. To reproduce the reviewed assignment submission instead, compile `overleaf-template/main.tex` as described in **Final submission source**.
 
 ## Verification
 
@@ -132,7 +142,7 @@ Run the full behavior suite:
 python -m unittest discover -s tabular-classification-report/tests -p 'test_*.py'
 ```
 
-The current pre-submission version passes 56 unit tests and all 13 full-grid Phase 5 forward-test scenarios. The unit suite includes direct dataset-to-PDF checks, human checkpoints, and 19 LaTeX-route regressions covering single-file holdouts, multiclass output, unresolved positive-class semantics, label-based confusion-matrix orientation, reference selection, template placeholders, hostile labels, URL validation, and natural left-then-right column flow. PHASE5-RUN-013 rechecks adaptive model-family routing, pre-CV time/group dependency checkpoints, formats, classes, reports, and safe-refusal branches after the final LaTeX layout repair. All six modelled report variants generated and compiled locally with Tectonic 0.17.0 as two-page A4 PDFs; all 12 pages were visually inspected. RUN-008 remains the immutable real-data modelling evidence; its run fingerprint predates report-only changes. Earlier review files preserve the state observed at their recorded dates; the current release state is authoritative in `RELEASE_MANIFEST.json` and `reviews/FINAL-GRADER-AUDIT-2026-09-21.md`. Failed diagnostic runs and successful reruns are summarized in [forward-tests/PHASE-5-RESULTS.md](forward-tests/PHASE-5-RESULTS.md).
+The current pre-submission version passes 56 unit tests and all 13 full-grid Phase 5 forward-test scenarios. The unit suite includes direct dataset-to-PDF checks, human checkpoints, and 19 LaTeX-route regressions covering single-file holdouts, multiclass output, unresolved positive-class semantics, label-based confusion-matrix orientation, reference selection, template placeholders, hostile labels, URL validation, and natural left-then-right column flow. PHASE5-RUN-013 rechecks adaptive model-family routing, pre-CV time/group dependency checkpoints, formats, classes, reports, and safe-refusal branches after the final LaTeX layout repair. All six modelled report variants generated and compiled locally with Tectonic 0.17.0 as two-page A4 PDFs; all 12 pages were visually inspected. RUN-008 remains the immutable real-data modelling evidence; its run fingerprint predates report-only changes. Dated review files preserve the state observed at the time of each review; the current release state is authoritative in [`RELEASE_MANIFEST.json`](RELEASE_MANIFEST.json). Failed diagnostic runs and successful reruns are summarized in [forward-tests/PHASE-5-RESULTS.md](forward-tests/PHASE-5-RESULTS.md).
 
 ## Reproducibility and privacy
 
