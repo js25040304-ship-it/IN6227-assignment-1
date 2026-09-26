@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "release_status": "github-source-released-ntulearn-pending",
-  "frozen_at": "2026-09-23",
-  "reviewed_at": "2026-09-23",
+  "frozen_at": "2026-09-26",
+  "reviewed_at": "2026-09-26",
   "skill_name": "tabular-classification-report",
   "skill_sha256": "c3c476dbd99c828633fd3d29ab7484eddfa5785553280b8ac0153f8810ce2b4e",
   "verification": {
@@ -37,24 +37,24 @@
     "visibility": "public",
     "remote_source_uploaded": true,
     "latest_local_source_uploaded": true,
-    "verified_source_commit": "6141425bb283d3a9eb8b5b69a1ab4ff7895218b5",
+    "verified_source_commit": "16dac32a38ad2d940f2020d8005da0bc6bf7836f",
     "teacher_access_verified": true
   },
   "report_review": {
     "run": "RUN-008",
     "identity_supplied": true,
     "main_report_pages": 2,
-    "candidate_main_report_sha256": "3df6f769d5b30cba90731be68d1eb5ea7d2f5b781aabf2b826564b00053e3bf8",
+    "candidate_main_report_sha256": "0a9a73d7b337324b91ef0502855500cf1387e3edf02aa7c35eb4b39e988dbf61",
     "reflection_pages": 1,
     "submission_package_pages": 3,
     "submission_pdf_path": "output/pdf/IN6227_Assignment1_G2608370F.pdf",
-    "submission_pdf_sha256": "95b72b120dd147e6306543533c38c3a03cb077d9f017606e1b328221c8ed9df5",
+    "submission_pdf_sha256": "ae10b4b233218ad4717dd5b927c2087eb4203d23f66f335c277f598207385264",
     "paper_size": "A4",
-    "visual_review": "passed-all-three-pages",
+    "visual_review": "passed-all-three-pages-after-overleaf-layout-redesign",
     "reflection_review": "accepted-no-critical-or-major-defects",
     "reflection_author_confirmation": "confirmed-by-user-on-2026-09-20",
     "release_ready": false,
-    "reason": "Final local three-page package passed Reflection, structural, content, hyperlink, and visual review; the optional LaTeX route passed its repaired regressions, six local PDF compilations, and 12-page visual review; the reviewed source is public on GitHub and anonymously readable; NTULearn has not been submitted"
+    "reason": "Final local three-page package passed Reflection, structural, content, hyperlink, and visual review on 2026-09-26; the A4 two-page main report uses the reviewed Overleaf-ready layout and is followed by the one-page Reflection; the reviewed source is public on GitHub; NTULearn has not been submitted"
   },
   "remaining_release_inputs": [
     "upload the verified PDF to NTULearn only after user authorization"
